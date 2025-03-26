@@ -8,7 +8,7 @@ router.post("/verifyToken", async (req, res) => {
     try {
         const decodedToken = await admin.auth().verifyIdToken(idToken);  // Verify the ID token
         res.json({ success: true, uid: decodedToken.uid });
-    } catch (error) {
+    } catch (error)  {
         res.status(401).json({ error: "Unauthorized" });
     }
 });
