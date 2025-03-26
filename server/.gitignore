@@ -1,0 +1,11 @@
+# Ignore Firebase Service Account key
+config/firebaseServiceAccountKey.json
+
+# Ignore node_modules
+node_modules/
+
+# Ignore .env (if you create one for environment variables)
+.env
+
+# Other common files you might want to ignore
+*.log
