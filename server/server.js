@@ -2,8 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');  // Import your auth routes
 const surveyRoutes = require("./routes/survey");
+const recommendationsRoutes = require("./routes/recommendations"); // Import your recommendations routes
+const userRoutes = require('./routes/user'); // Import your new user routes
+
 const {json} = require("body-parser"); // Ensure this points to your Sequelize setup
 const { initializeAssociations, sequelize } = require('./models');
+
 require("dotenv").config();
 
 const app = express();
@@ -23,15 +27,12 @@ sequelize.sync().then(() => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);  // Mount your auth routes
-app.use('/api/survey', surveyRoutes);  // Mount your survey routes
+app.use('/api/auth', authRoutes);
+app.use('/api/survey', surveyRoutes);
+app.use('/api/recommendations', recommendationsRoutes);
+app.use('/api/user', userRoutes);
 
-// Sync Sequelize models with the database
-sequelize.sync().then(() => {
-    console.log('Database synchronized');
-});
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

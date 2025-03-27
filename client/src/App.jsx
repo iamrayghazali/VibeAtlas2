@@ -1,13 +1,13 @@
 import './App.css'
-import {UserProvider} from "./UserContext.jsx";
+import {AuthProvider} from "./context/AuthContext.jsx";
 
 function App() {
 
   return (
     <>
-      <UserProvider>
+      <AuthProvider>
 
-      </UserProvider>
+      </AuthProvider>
     </>
   )
 }
