@@ -4,6 +4,7 @@ const authRoutes = require('./routes/auth');  // Import your auth routes
 const surveyRoutes = require("./routes/survey");
 const {json} = require("body-parser"); // Ensure this points to your Sequelize setup
 const { initializeAssociations, sequelize } = require('./models');
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 7050;

@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ErrorElement from "./pages/ErrorElement";
 import Survey from "./pages/Survey.jsx";
+import Recommendations from "./pages/Recommendations.jsx";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
         path: "/survey",
         element: <Survey />,
+    },
+    {
+        path: "/recommendations",
+        element: <Recommendations />,
     },
     {
         path: "*",  // Catch-all route for unknown pages
