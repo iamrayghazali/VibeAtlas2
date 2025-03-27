@@ -20,13 +20,13 @@ function Register() {
 
     return (
         <div>
-            <h2>Register</h2>
+            <h2>Create account</h2>
             <form onSubmit={handleRegister}>
                 <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
                 <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                 <button type="submit">Register</button>
             </form>
-            <button onClick={googleLogin}>Sign in with Google</button>
+            <button onClick={() => navigate("/login")}>I already have an account</button>
         </div>
     );
 }

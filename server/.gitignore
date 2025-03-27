@@ -9,3 +9,5 @@ node_modules/
 
 # Other common files you might want to ignore
 *.log
+
+config
