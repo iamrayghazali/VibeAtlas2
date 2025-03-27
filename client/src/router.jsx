@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ErrorElement from "./pages/ErrorElement";
+import Survey from "./pages/Survey.jsx";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login />,
+    },
+    {
+        path: "/survey",
+        element: <Survey />,
     },
     {
         path: "*",  // Catch-all route for unknown pages
