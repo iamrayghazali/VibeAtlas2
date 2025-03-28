@@ -1,42 +1,113 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import {useUser} from "../UserContext.jsx";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 const Recommendations = () => {
     const [recommendations, setRecommendations] = useState([]);
-    const { user } = useUser();
+    const [loading, setLoading] = useState(false);
+    const [city, setCity] = useState("Yemen");
+    const [country, setCountry] = useState("Sana'a");
+    const [error, setError] = useState(null);
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
-    if (!user) {
-        return <p>Please log in to see recommendations.</p>;
-    }
-
-    const userId = user.uid; // Access the user ID
 
     useEffect(() => {
-        const userId = 1;  // Replace with actual user ID, maybe stored in global state
+        if (!user) {
+            setLoading(false);
+        }
+         // to make sure no API call is made before user is authenticated
+        if (user) {
+            //getAIRecommendations().then(() => console.log("AI recommendations function ran."));
+            getEventRecommendations().then(() => console.log("Event recommendations function ran."));
+        }
 
-        axios.get(`http://localhost:7050/recommendations/${userId}`)
+    }, [user, city, country]); // Depend on user, city, and country
+
+    const getAIRecommendations =  async () => {
+        setLoading(true);
+        axios.get(`http://localhost:7050/api/recommendations/${user.uid}/${city}/${country}`)
             .then((response) => {
                 setRecommendations(response.data.recommendations);
+                console.log(response.data.recommendations);
+                setLoading(false);
             })
             .catch((error) => {
-                console.error('Error fetching recommendations:', error);
-            });
-    }, []);
+                console.error("Error fetching recommendations:", error);
+                setLoading(false);
+                setError("We could not fetch recommendations, please try again later.");
+            } );
+    }
+
+    const getEventRecommendations = async () => {
+        setLoading(true);
+        axios.get("api/recommendations/events").then((response) => {
+            console.log(response.data);
+            return response.data;
+        })
+
+    }
+
+    function createGoogleMapsLink(latitude, longitude) {
+        if (latitude && longitude) {
+            return `https://www.google.com/maps?q=${latitude},${longitude}`;
+        }
+        return '#';
+    }
+
+    if (!user) return <p>Please log in to see recommendations.</p>;
 
     return (
+        <ProtectedRoute>
         <div>
-            <h1>Your Personalized Recommendations</h1>
-            <ul>
-                {recommendations.map((place, index) => (
-                    <li key={index}>
-                        <h2>{place.name}</h2>
-                        <p>{place.location}</p>
-                        <p>{place.description}</p>
-                    </li>
-                ))}
-            </ul>
+            { user ? ("logged in") :("not logged in")}
+            {
+                error ? (
+                    <>
+                        <h2>{error}</h2>
+                    </>
+                ) : (
+                    <>
+                        { loading ? (
+                                <>
+                                    <p>Loading...</p>
+                                </>
+                            ) : (
+                                <>
+                                    <h2>Your Personalized Recommendations</h2>
+                                    <ul>
+                                        { recommendations.map((place) => (
+                                            <>
+                                                <p>For you</p>
+                                                    <li key={place.id}>
+                                                        <h2>{place.name}</h2>
+                                                        <p>{place.location}</p>
+                                                        <p>{place.description}</p>
+                                                        <p>Category: {place.category}</p>
+                                                        <p>Price: {place.price_local} (~{place.price_usd})</p>
+                                                        {place.coordinates && (
+                                                            <a
+                                                                href={createGoogleMapsLink(place.coordinates.latitude, place.coordinates.longitude)}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                View on Google Maps
+                                                            </a>
+                                                        )}
+                                                    </li>
+                                            </>
+                                        ))}
+                                    </ul>
+                                </>
+                            )
+                        }
+                    </>
+                )
+            }
         </div>
+        </ProtectedRoute>
     );
 };
 
