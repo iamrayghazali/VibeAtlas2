@@ -33,8 +33,11 @@ function Home() {
                     }
                 </Geographies>
             </ComposableMap>
-            //TODO add list countries
-            //TODO add city
+            //TODO add dropdown countries
+            //TODO add dropdown city
+
+
+
         </div>
     );
 }
