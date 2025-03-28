@@ -32,6 +32,7 @@ function Login() {
                 <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                 <button type="submit">Login</button>
             </form>
+            <button onClick={() => navigate("/registration")}>Sign up</button>
             <button onClick={googleLogin}>Sign in with Google</button>
         </div>
     );
