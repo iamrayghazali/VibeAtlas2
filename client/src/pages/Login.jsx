@@ -7,11 +7,17 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const user = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             await login(email, password);
+            if (login) {
+                console.log(login);
+                console.log("logged in");
+
+            }
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error.message);
@@ -19,7 +25,7 @@ function Login() {
     };
 
     return (
-        <div>
+        <div> { user ? ("logged in") :("not logged in")}
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />

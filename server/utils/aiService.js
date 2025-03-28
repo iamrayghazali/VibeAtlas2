@@ -9,7 +9,7 @@ if (!apiKey) {
 const genAI = new GoogleGenerativeAI(apiKey);
 
 function structureUserPreferences() {
-
+    //TODO
 }
 
 async function getTravelRecommendations(userPreferences, city, country) {
@@ -74,7 +74,8 @@ async function getTravelRecommendations(userPreferences, city, country) {
 
         const prompt = `
             You are a travel recommendation assistant. 
-            Provide EXACTLY 5 recommendations for a traveler visiting ${city}, ${country}.
+            Provide EXACTLY 10 recommendations for a traveler visiting ${city}, COUNTRY CCA3: ${country}.
+            If that number is too much respond with less, but make sure they are real places!
             
             OUTPUT REQUIREMENTS:
             - Respond ONLY in VALID JSON format
