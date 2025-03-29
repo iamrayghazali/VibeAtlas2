@@ -63,7 +63,6 @@ const Recommendations = () => {
     return (
         <div>
         <Box sx={{ width: '100%' }}>
-            <LinearProgress variant="determinate" value={progress} />
         </Box>
             { user ? ("logged in") :("not logged in")}
             {

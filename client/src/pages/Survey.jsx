@@ -2,13 +2,22 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Box, Container, LinearProgress, Typography, Card, CardContent, Radio, FormControlLabel } from "@mui/material";
+import {
+    Box,
+    Container,
+    LinearProgress,
+    Typography,
+    Card,
+    Checkbox,
+    FormControlLabel,
+    Button
+} from "@mui/material";
 
 const Survey = () => {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState(new Set()); // Track multiple selections
 
     useEffect(() => {
         axios.get("http://localhost:7050/api/survey/questions")
@@ -19,91 +28,113 @@ const Survey = () => {
     const handleNext = () => {
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(currentIndex + 1);
-            setSelectedOption(null);
         } else {
             navigate("/recommendations/");
         }
     };
 
+    const handleOptionChange = (optionId) => {
+        setSelectedOptions((prevSelectedOptions) => {
+            const newSelectedOptions = new Set(prevSelectedOptions);
+            if (newSelectedOptions.has(optionId)) {
+                newSelectedOptions.delete(optionId); // Deselect if already selected
+            } else {
+                newSelectedOptions.add(optionId); // Select if not selected
+            }
+            return newSelectedOptions;
+        });
+    };
+
     return (
-        <Container sx={{ width: "100%", margin: "0px", padding: "0px" }}>
-            <LinearProgress variant="determinate" value={(currentIndex + 1) / questions.length * 100} sx={{ minWidth: "100%", height: "12px" }} />
-            {questions.length > 0 && (
-                <motion.div
-                    key={currentIndex}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-center p-5"
-                >
-                    <Typography variant={"h5"} sx={{ margin: "2rem", fontWeight: "bold", fontSize: "1.5rem" }}>
-                        {questions[currentIndex].question_text}
-                    </Typography>
+        <Container sx={{ width: "100%", padding: "0px", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            <Card
+                sx={{
+                    width: "70%",
+                    padding: "2rem",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+                    backdropFilter: "blur(10px)",
+                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    borderRadius: "12px",
+                    color: "#fff",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                }}
+            >
+                <LinearProgress
+                    variant="determinate"
+                    value={(currentIndex) / questions.length * 100}
+                    sx={{ minWidth: "100%", height: "12px", marginBottom: "1rem", borderRadius: "12px" }}
+                />
 
-                    <Box
-                        display="grid"
-                        gridTemplateColumns="repeat(auto-fill, minmax(250px, 1fr))"
-                        gap={2}
-                        sx={{ marginBottom: "2rem" }}
+                {questions.length > 0 && (
+                    <motion.div
+                        key={currentIndex}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
                     >
-                        {questions[currentIndex].options.map((option) => (
-                            <Card
-                                key={option.id}
+                        <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "1rem", fontSize: "1.25rem" }}>
+                            {questions[currentIndex].question_text}
+                        </Typography>
+
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                            {questions[currentIndex].options.map((option) => (
+                                <Box
+                                    key={option.id}
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: "0.5rem",
+                                        backgroundColor: selectedOptions.has(option.id) ? "#2196f3" : "#333",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                        transition: "background-color 0.3s ease",
+                                        "&:hover": {
+                                            backgroundColor: "#1976d2",
+                                        },
+                                    }}
+                                    onClick={() => handleOptionChange(option.id)}
+                                >
+                                    <Checkbox
+                                        checked={selectedOptions.has(option.id)}
+                                        onChange={() => handleOptionChange(option.id)}
+                                        value={option.id}
+                                        sx={{
+                                            color: selectedOptions.has(option.id) ? "#fff" : "#aaa",
+                                        }}
+                                    />
+                                    <Typography sx={{ color: "#fff", fontWeight: "500", fontSize: "1rem" }}>
+                                        {option.option_text}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Box>
+
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2rem" }}>
+                            <Button
+                                variant="contained"
+                                onClick={handleNext}
+                                disabled={selectedOptions.size === 0} // Disable the button if no option is selected
                                 sx={{
-                                    borderRadius: "12px",
-                                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                    cursor: "pointer",
-                                    position: "relative",
+                                    padding: "10px 20px",
+                                    backgroundColor: "#2196f3",
+                                    color: "white",
                                     "&:hover": {
-                                        transform: "scale(1.05)",
-                                        boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                                        backgroundColor: "#1976d2",
                                     },
-                                    padding: "20px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    textAlign: "center",
-                                    backgroundColor: selectedOption === option.id ? "#e3f2fd" : "#fff",
-                                    border: selectedOption === option.id ? "2px solid #2196f3" : "2px solid transparent",
+                                    borderRadius: "10px",
+                                    fontWeight: "bold",
+                                    minWidth: "150px",
+                                    height: "50px",
                                 }}
-                                onClick={() => setSelectedOption(option.id)}
                             >
-                                <FormControlLabel
-                                    control={
-                                        <Radio
-                                            checked={selectedOption === option.id}
-                                            onChange={() => setSelectedOption(option.id)}
-                                            value={option.id}
-                                            name="radio-buttons"
-                                            sx={{
-                                                position: "absolute",
-                                                top: 10,
-                                                right: 10,
-                                                color: selectedOption === option.id ? "#2196f3" : "gray",
-                                            }}
-                                        />
-                                    }
-                                    label=""
-                                    sx={{ position: "absolute", top: 10, right: 10 }}
-                                />
-                                <Typography variant="body1" sx={{ fontSize: "1rem", fontWeight: "500", color: "#333" }}>
-                                    {option.option_text}
-                                </Typography>
-                            </Card>
-                        ))}
-                    </Box>
-
-                    <button
-                        onClick={handleNext}
-                        disabled={!selectedOption}
-                        className="mt-6 px-6 py-2 bg-blue-500 rounded-lg disabled:bg-gray-500 text-white font-bold"
-                    >
-                        Next
-                    </button>
-                </motion.div>
-            )}
+                                {currentIndex === questions.length - 1 ? "Get Recommendations" : "Next"}
+                            </Button>
+                        </Box>
+                    </motion.div>
+                )}
+            </Card>
         </Container>
     );
 };
