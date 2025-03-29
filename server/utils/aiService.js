@@ -86,10 +86,9 @@ async function getTravelRecommendations(userPreferences, city, country) {
                         "id": "unique_string_id",
                         "name": "Exact Location Name",
                         "location": "Precise City and Country",
-                        "description": "Short, engaging description (max 15 words)",
-                        "category": "Tourism Category",
-                        "price_local": "Local currency amount",
-                        "price_usd": "USD equivalent",
+                        "description": "Short, engaging description (max 3 sentences)",
+                        "category": "Should be one of the following: sightseeing, adventures, beach, historical, food, shopping",
+                        "price": "use $ signs as to tell the price of the place, $ is cheap $$$$ is expensive", 
                         "coordinates": {
                             "latitude": valid coordinates.latitude,
                             "longitude": valid coordinates.longitude, 
