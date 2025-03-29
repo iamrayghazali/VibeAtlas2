@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
-import { Box, CircularProgress, Typography, Paper, Button } from "@mui/material";
+import {Box, CircularProgress, Typography, Paper, Button, Divider} from "@mui/material";
 import { motion } from "framer-motion";
 
 const Recommendations = () => {
@@ -64,6 +64,8 @@ const Recommendations = () => {
             }} elevation={4}>
                 {loading ? (
                     <>
+                        <Button variant={"contained"} onClick={() => navigate("/location")}>Change country</Button>
+                        <Typography variant="h6"> choosen yountry here</Typography>
                         <Typography variant="h4" sx={{ fontWeight: 600, color: "#fff", marginBottom: "1.5rem" }}>
                             Your Personalized Recommendations
                         </Typography>
@@ -76,6 +78,7 @@ const Recommendations = () => {
                         <Typography variant="h4" sx={{ fontWeight: 600, color: "#fff", marginBottom: "1.5rem" }}>
                             Your Personalized Recommendations
                         </Typography>
+                        <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
 
                         <Box sx={{ width: "100%", paddingBottom: '1rem' }}>
                             {recommendations.length === 0 ? (
@@ -108,6 +111,8 @@ const Recommendations = () => {
                                                 <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: '0.5rem' }}>
                                                     {place.name}
                                                 </Typography>
+                                                <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
+
                                                 <Typography variant="body2" sx={{ color: '#ccc', marginBottom: '0.5rem' }}>
                                                     {place.description}
                                                 </Typography>

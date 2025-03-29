@@ -29,6 +29,11 @@ function Home() {
     }, [surveyIsFilled, navigate]);
 
     return (
+/*  TODO:
+    - get city names api call
+    - fix backend route error handling
+    - /location design
+    - /home design */
         <div>
             <Typography variant={"h2"}>What’s the move?</Typography>
             <Typography variant={"subtitle1"}>From ‘what’s the move?’ to ‘we out’—AI makes it easy.</Typography>
