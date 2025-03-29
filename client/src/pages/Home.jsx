@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
 import axios from "axios";
+import {Button, Typography} from "@mui/material";
 
 function Home() {
     const navigate = useNavigate();
@@ -28,26 +29,22 @@ function Home() {
     }, [surveyIsFilled, navigate]);
 
     return (
-
-                        <div>
-                            <h1>Where are you vibin' today?</h1>
-                            <p>Discover the world, explore new places, and get personalized recommendations based on your preferences.</p>
-                            {
-                                user ? (
-                                    <>
-                                        <button onClick={() => navigate("/location")}>Go to Recommendations</button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <button onClick={() => navigate("/register")}>Register</button>
-                                        <button onClick={() => navigate("/login")}>Login</button>
-                                    </>
-                                )
-                            }
-                        </div>
-
-
-
+        <div>
+            <Typography variant={"h2"}>What’s the move?</Typography>
+            <Typography variant={"subtitle1"}>From ‘what’s the move?’ to ‘we out’—AI makes it easy.</Typography>
+            {
+                user ? (
+                    <>
+                        <Button variant="contained" onClick={() => navigate("/location")}>Go to Recommendations</Button>
+                    </>
+                ) : (
+                    <>
+                        <Button variant="contained" onClick={() => navigate("/register")}>Register</Button>
+                        <Button variant="outlined" onClick={() => navigate("/login")}>Login</Button>
+                    </>
+                )
+            }
+        </div>
     );
 }
 

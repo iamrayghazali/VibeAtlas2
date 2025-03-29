@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Tooltip } from "react-tooltip";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { Autocomplete, TextField } from "@mui/material";
+import {Autocomplete, TextField, Typography} from "@mui/material";
 import map from "../assets/map-data.json";
 import axios from "axios";
 import * as iso3166 from "iso-3166-1";
@@ -60,7 +60,7 @@ function Home() {
 
     return (
         <div>
-            <h1>Where are you vibin' today?</h1>
+            <Typography variant={"h2"}>Where are you vibin' today?</Typography>
 
             <Tooltip id="my-tooltip" />
             <ComposableMap data-tip="">
@@ -107,7 +107,7 @@ function Home() {
 
             {currentCountryAbrv ? ( // Ensure there are city names before rendering the city select
                 <>
-                    <p>Nice! Now select the city.</p>
+                    <Typography variant={"h5"}>Nice! Now select the city.</Typography>
                     <Autocomplete
                         disablePortal
                         options={cityNames}

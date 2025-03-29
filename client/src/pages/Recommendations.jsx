@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import {Box, LinearProgress, Typography} from "@mui/material";
 
 const Recommendations = () => {
     const [recommendations, setRecommendations] = useState([]);
@@ -60,33 +61,35 @@ const Recommendations = () => {
     if (!user) return <p>Please log in to see recommendations.</p>;
 
     return (
-        <ProtectedRoute>
         <div>
+        <Box sx={{ width: '100%' }}>
+            <LinearProgress variant="determinate" value={progress} />
+        </Box>
             { user ? ("logged in") :("not logged in")}
             {
                 error ? (
                     <>
-                        <h2>{error}</h2>
+                        <Typography variant={"h2"}>{error}</Typography>
                     </>
                 ) : (
                     <>
                         { loading ? (
                                 <>
-                                    <p>Loading...</p>
+                                    <Typography variant={"h2"}>Loading...</Typography>
                                 </>
                             ) : (
                                 <>
-                                    <h2>Your Personalized Recommendations</h2>
+                                    <Typography variant={"h2"}>Your Personalized Recommendations</Typography>
                                     <ul>
                                         { recommendations.map((place) => (
                                             <>
-                                                <p>For you</p>
-                                                    <li key={place.id}>
-                                                        <h2>{place.name}</h2>
-                                                        <p>{place.location}</p>
-                                                        <p>{place.description}</p>
-                                                        <p>Category: {place.category}</p>
-                                                        <p>Price: {place.price_local} (~{place.price_usd})</p>
+                                                <Typography variant={"h2"}>For you</Typography>
+                                                    <Box key={place.id}>
+                                                        <Typography variant={"h2"}>{place.name}</Typography>
+                                                        <Typography variant={"subtitle1"}>{place.location}</Typography>
+                                                        <Typography variant={"subtitle1"}>{place.description}</Typography>
+                                                        <Typography variant={"subtitle1"}>Category: {place.category}</Typography>
+                                                        <Typography variant={"subtitle1"}>Price: {place.price_local} (~{place.price_usd})</Typography>
                                                         {place.coordinates && (
                                                             <a
                                                                 href={createGoogleMapsLink(place.coordinates.latitude, place.coordinates.longitude)}
@@ -96,7 +99,7 @@ const Recommendations = () => {
                                                                 View on Google Maps
                                                             </a>
                                                         )}
-                                                    </li>
+                                                    </Box>
                                             </>
                                         ))}
                                     </ul>
@@ -107,7 +110,6 @@ const Recommendations = () => {
                 )
             }
         </div>
-        </ProtectedRoute>
     );
 };
 
