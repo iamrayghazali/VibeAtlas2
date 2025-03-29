@@ -34,13 +34,19 @@ router.get("/:userId/:city/:country", async (req, res) => {
 });
 
 router.get("/events", async (req, res) => {
+    const location = req.query.location; // Get location from query parameters
+
     try {
-        const recommendations = await getEventRecommendations();
-        res.json(recommendations);
+        const recommendations = await getEventRecommendations(location);
+        if (recommendations) {
+            res.json(recommendations);
+        } else {
+            res.status(404).json({ error: "No recommendations found" });
+        }
     } catch (error) {
         console.error("Error in recommendations route:", error);
         res.status(500).json({ error: "Internal Server Error", details: error.message });
     }
-})
+});
 
 module.exports = router;

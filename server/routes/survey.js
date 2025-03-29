@@ -19,15 +19,19 @@ router.get('/questions', async (req, res) => {
     }
 });
 
-router.get('/:country/cities', async (req, res) => {
-    const country = req.params.country;
+
+router.get("/:country/cities", async (req, res) => {
+    const country = req.params.country.toUpperCase(); // Ensure uppercase country code
     try {
         const cityNames = await getCityNames(country);
-        res.json({ names: cityNames });
+        if (!cityNames.length) {
+            res.status(404).send('No city name found');
+        }
+        res.json({ cities: cityNames });
     } catch (e) {
-        console.log(e);
-        res.status(404);
+        console.error(e);
+        res.status(500).json({ error: "Failed to fetch city names" });
     }
-})
+});
 
 module.exports = router;
