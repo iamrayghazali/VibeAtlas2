@@ -26,7 +26,6 @@ const Survey = () => {
     };
 
     return (
-        <ProtectedRoute>
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
             <ProgressBar progress={(currentIndex + 1) / questions.length * 100} />
 
@@ -65,7 +64,6 @@ const Survey = () => {
                 </motion.div>
             )}
         </div>
-        </ProtectedRoute>
     );
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,6 @@ function Login() {
             if (login) {
                 console.log(login);
                 console.log("logged in");
-
             }
             navigate("/");
         } catch (error) {
@@ -24,8 +23,16 @@ function Login() {
         }
     };
 
+    useEffect(() => {
+        if (user) {
+            navigate("/recommendations/");
+        } else {
+            console.log("not logged in");
+        }
+    }, [user])
+
     return (
-        <div> { user ? ("logged in") :("not logged in")}
+        <div> { user ? ("logged in") : ("not logged in")}
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
