@@ -1,14 +1,23 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import {useNavigate} from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute.jsx";
+import { useNavigate } from "react-router-dom";
+import {
+    Box,
+    Container,
+    LinearProgress,
+    Typography,
+    Card,
+    Checkbox,
+    FormControlLabel,
+    Button
+} from "@mui/material";
 
 const Survey = () => {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState(new Set()); // Track multiple selections
 
     useEffect(() => {
         axios.get("http://localhost:7050/api/survey/questions")
@@ -19,66 +28,115 @@ const Survey = () => {
     const handleNext = () => {
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(currentIndex + 1);
-            setSelectedOption(null);
         } else {
             navigate("/recommendations/");
         }
     };
 
+    const handleOptionChange = (optionId) => {
+        setSelectedOptions((prevSelectedOptions) => {
+            const newSelectedOptions = new Set(prevSelectedOptions);
+            if (newSelectedOptions.has(optionId)) {
+                newSelectedOptions.delete(optionId); // Deselect if already selected
+            } else {
+                newSelectedOptions.add(optionId); // Select if not selected
+            }
+            return newSelectedOptions;
+        });
+    };
+
     return (
-        <ProtectedRoute>
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
-            <ProgressBar progress={(currentIndex + 1) / questions.length * 100} />
+        <Container sx={{ width: "100%", padding: "0px", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            <Card
+                sx={{
+                    width: "70%",
+                    padding: "2rem",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+                    backdropFilter: "blur(10px)",
+                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    borderRadius: "12px",
+                    color: "#fff",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                }}
+            >
+                <LinearProgress
+                    variant="determinate"
+                    value={(currentIndex) / questions.length * 100}
+                    sx={{ minWidth: "100%", height: "12px", marginBottom: "1rem", borderRadius: "12px" }}
+                />
 
-            {questions.length > 0 && (
-                <motion.div
-                    key={currentIndex}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-center p-5"
-                >
-                    <h2 className="text-2xl font-bold">{questions[currentIndex].question_text}</h2>
-
-                    <div className="mt-6 grid grid-cols-2 gap-4">
-                        {questions[currentIndex].options.map(option => (
-                            <motion.div
-                                key={option.id}
-                                whileHover={{ scale: 1.05 }}
-                                className={`p-4 rounded-lg cursor-pointer text-center transition-all ${
-                                    selectedOption === option.id ? "bg-blue-500" : "bg-gray-700"
-                                }`}
-                                onClick={() => setSelectedOption(option.id)}
-                            >
-                                {option.option_text}
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    <button
-                        onClick={handleNext}
-                        disabled={!selectedOption}
-                        className="mt-6 px-6 py-2 bg-blue-500 rounded-lg disabled:bg-gray-500"
+                {questions.length > 0 && (
+                    <motion.div
+                        key={currentIndex}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
                     >
-                        Next
-                    </button>
-                </motion.div>
-            )}
-        </div>
-        </ProtectedRoute>
+                        <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "1rem", fontSize: "1.25rem" }}>
+                            {questions[currentIndex].question_text}
+                        </Typography>
+
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                            {questions[currentIndex].options.map((option) => (
+                                <Box
+                                    key={option.id}
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: "0.5rem",
+                                        backgroundColor: selectedOptions.has(option.id) ? "#2196f3" : "#333",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                        transition: "background-color 0.3s ease",
+                                        "&:hover": {
+                                            backgroundColor: "#1976d2",
+                                        },
+                                    }}
+                                    onClick={() => handleOptionChange(option.id)}
+                                >
+                                    <Checkbox
+                                        checked={selectedOptions.has(option.id)}
+                                        onChange={() => handleOptionChange(option.id)}
+                                        value={option.id}
+                                        sx={{
+                                            color: selectedOptions.has(option.id) ? "#fff" : "#aaa",
+                                        }}
+                                    />
+                                    <Typography sx={{ color: "#fff", fontWeight: "500", fontSize: "1rem" }}>
+                                        {option.option_text}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Box>
+
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2rem" }}>
+                            <Button
+                                variant="contained"
+                                onClick={handleNext}
+                                disabled={selectedOptions.size === 0} // Disable the button if no option is selected
+                                sx={{
+                                    padding: "10px 20px",
+                                    backgroundColor: "#2196f3",
+                                    color: "white",
+                                    "&:hover": {
+                                        backgroundColor: "#1976d2",
+                                    },
+                                    borderRadius: "10px",
+                                    fontWeight: "bold",
+                                    minWidth: "150px",
+                                    height: "50px",
+                                }}
+                            >
+                                {currentIndex === questions.length - 1 ? "Get Recommendations" : "Next"}
+                            </Button>
+                        </Box>
+                    </motion.div>
+                )}
+            </Card>
+        </Container>
     );
 };
-
-// Progress Bar Component
-const ProgressBar = ({ progress }) => (
-    <div className="w-full bg-gray-700 h-2 rounded-md mt-4">
-        <motion.div
-            className="h-full bg-blue-500 rounded-md"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
-        />
-    </div>
-);
 
 export default Survey;

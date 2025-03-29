@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import {Box, Button, Typography} from "@mui/material";
 
 function ErrorElement() {
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h2>Oops! Something went wrong.</h2>
-            <p>The page you're looking for doesn't exist.</p>
-            <Link to="/">Go back to Home</Link>
-        </div>
+        <Box style={{ textAlign: "center", padding: "20px" }}>
+            <Typography variant={"h2"}>Oops! Something went wrong.</Typography>
+            <Typography variant={"subtitle1"}>The page you're looking for doesn't exist.</Typography>
+            <Button variant="contained" onClick={() => navigate("/")}>Go to Home</Button>
+        </Box>
     );
 }
 
