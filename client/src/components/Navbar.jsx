@@ -27,25 +27,32 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="sticky" sx={{ background: "white", boxShadow: "none", color: "black", textTransform: "none" }}>
+        <AppBar position="sticky" sx={{ background: "white", boxShadow: "none", color: "black", fontFamily: "Lato" }}>
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                 {/* Logo */}
-                <Box component="img" src={logo} alt="Logo" sx={{ height: 40, cursor: "pointer" }} onClick={() => navigate("/")} />
+                <Box component="img" src={logo} alt="Logo" sx={{ height: 50, cursor: "pointer" }} onClick={() => navigate("/")} />
 
                 {/* Desktop Menu */}
                 <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
-                    <Button color="text" onClick={() => navigate("/select-location")}>select Location</Button>
-                    <Button color="text" onClick={() => navigate("/about")}>about</Button>
+                    <Button variant={"contained"}  sx={{backgroundColor: "black", color: "white"}}  color="text" onClick={() => navigate("/select-location")}>Select location</Button>
+                    <Button  sx={{textTransform: "none"}}  color="text" onClick={() => navigate("/about")}>About</Button>
+                    <Button
+                        sx={{ textTransform: "none" }}
+                        color="text"
+                        onClick={() => document.getElementById("guide-section").scrollIntoView({ behavior: "smooth" })}
+                    >
+                        Guide
+                    </Button>
                 </Box>
 
                 {/* Auth Buttons */}
                 <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
                     {user ? (
-                        <Button color="text" onClick={handleSignOut}>Logout</Button>
+                        <Button  sx={{textTransform: "none"}}  color="text" onClick={handleSignOut}>Logout</Button>
                     ) : (
                         <>
-                            <Button color="outlined" onClick={() => navigate("/register")}>Register</Button>
-                            <Button color="text" onClick={() => navigate("/login")}>Login</Button>
+                            <Button  sx={{textTransform: "none"}}  variant={"outlined"} color={"black"} onClick={() => navigate("/register")}>Register</Button>
+                            <Button  sx={{textTransform: "none"}} variant={"text"} color={"black"} onClick={() => navigate("/login")}>Login</Button>
                         </>
                     )}
                 </Box>
@@ -58,7 +65,7 @@ const Navbar = () => {
 
             {/* Mobile Drawer */}
             <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-                <motion.div initial={{ x: 100 }} animate={{ x: 0 }} exit={{ x: 100 }} transition={{ type: "spring", stiffness: 100 }}>
+                <motion.div initial={{ x: 50 }} animate={{ x: 0 }} exit={{ x: 50 }} transition={{ type: "spring", stiffness: 100 }}>
                     <List>
                         <ListItem button onClick={() => navigate("/select-location")}>
                             <ListItemText primary="Select Location" />
@@ -75,7 +82,7 @@ const Navbar = () => {
                                 <ListItem button onClick={() => navigate("/register")}>
                                     <ListItemText primary="Register" />
                                 </ListItem>
-                                <ListItem button onClick={() => navigate("/login")}>
+                                <ListItem  button onClick={() => navigate("/login")}>
                                     <ListItemText primary="Login" />
                                 </ListItem>
                             </>
