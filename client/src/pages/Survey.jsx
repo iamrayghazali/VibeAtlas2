@@ -12,12 +12,16 @@ import {
     FormControlLabel,
     Button
 } from "@mui/material";
+import {useAuth} from "../context/AuthContext.jsx";
+import Navbar from "../components/Navbar.jsx";
 
 const Survey = () => {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [userId, setUserId] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState(new Set()); // Track multiple selections
+    const { user } = useAuth();
 
     useEffect(() => {
         axios.get("http://localhost:7050/api/survey/questions")
@@ -25,11 +29,17 @@ const Survey = () => {
             .catch(error => console.error("Error fetching questions:", error));
     }, []);
 
+    useEffect(() => {
+        if (user && user.uid) {
+            fetchUserId();
+        }
+    }, [user]);
+
     const handleNext = () => {
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
-            navigate("/recommendations/");
+            navigate("/location");
         }
     };
 
@@ -45,7 +55,36 @@ const Survey = () => {
         });
     };
 
+    const handleSubmit = () => {
+        const answers = Array.from(selectedOptions).map(optionId => {
+            const questionId = questions[currentIndex].id;
+            return { question_id: questionId, option_id: optionId };
+        });
+        console.log("submitting user: ", user.uid);
+
+        axios.post(`http://localhost:7050/api/survey/${userId}`, { answers })
+            .then((response) => {
+                console.log("Survey answers saved:", response.data);
+                //navigate("/location"); // Navigate to the next page
+            })
+            .catch((error) => {
+                console.error("Error saving survey answers:", error);
+            });
+    };
+
+    const fetchUserId = async () => {
+        console.log("fetching user: ", user.uid);
+            try {
+                const response = await axios.get(`http://127.0.0.1:7050/api/user/user-id/${user.uid}`);
+                setUserId(response.data.id);
+            } catch (error) {
+                console.error('Error fetching user id:', error);
+            }
+    };
+
     return (
+        <>
+            <Navbar></Navbar>
         <Container sx={{ width: "100%", padding: "0px", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
             <Card
                 sx={{
@@ -114,7 +153,7 @@ const Survey = () => {
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2rem" }}>
                             <Button
                                 variant="contained"
-                                onClick={handleNext}
+                                onClick={currentIndex === questions.length - 1 ? handleNext : handleSubmit}
                                 disabled={selectedOptions.size === 0} // Disable the button if no option is selected
                                 sx={{
                                     padding: "10px 20px",
@@ -129,13 +168,14 @@ const Survey = () => {
                                     height: "50px",
                                 }}
                             >
-                                {currentIndex === questions.length - 1 ? "Get Recommendations" : "Next"}
+                                {currentIndex === questions.length - 1 ? "Select travel destination" : "Next"}
                             </Button>
                         </Box>
                     </motion.div>
                 )}
             </Card>
         </Container>
+        </>
     );
 };
 

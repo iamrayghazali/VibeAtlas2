@@ -3,21 +3,45 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Card, Button, TextField, Typography, Box, Divider } from "@mui/material";
 import isEmail from "validator/es/lib/isEmail.js";
+import axios from "axios";
 
 function Register() {
     const { register } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
     const navigate = useNavigate();
     const [isValidEmail, setIsValidEmail] = useState(true);
+    const { user } = useAuth();
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
             await register(email, password);
+            await saveUserToDatabase(email, password, name);
             navigate("/");
         } catch (error) {
             console.error("Registration failed:", error.message);
+            console.log("Maybe already have an account")
+        }
+    };
+
+    const saveUserToDatabase = async (email, name) => {
+        if (user.uid) {
+            const uid = user.uid;
+            console.log("submitting user to db: ", user.uid);
+            try {
+                axios.post("http://127.0.0.1:7050/api/user/new", { uid, email, name })
+                    .then((res) => {
+                        console.log(res);
+                        console.log("saved user");
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            } catch (e) {
+                console.error("Error saving user", e);
+            }
         }
     };
 
@@ -68,6 +92,24 @@ function Register() {
                         fullWidth
                         error={!isValidEmail}
                         onChange={handleEmailChange}
+                        sx={{
+                            mb: 2,
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.4)" },
+                                "&:hover fieldset": { borderColor: "#fff" },
+                                "&.Mui-focused fieldset": { borderColor: "#fff" },
+                            },
+                            input: { color: "#fff" },
+                            label: { color: "rgba(255,255,255,0.7)" },
+                            width: { xs: "90%", md: "60%" },
+                        }}
+                    />
+                    <TextField
+                        type="name"
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        onChange={(e) => setName(e.target.value)}
                         sx={{
                             mb: 2,
                             "& .MuiOutlinedInput-root": {

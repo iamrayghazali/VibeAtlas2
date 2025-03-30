@@ -128,7 +128,9 @@ function Home() {
                     )}
                 { currentCity ? (
                     <>
-                        <Button variant={"contained"} onClick={() => {navigate("/recommendations", { state: { country: currentCountryName, city: currentCity } })}}>Check recommendations and events</Button>
+                        <Button variant={"contained"} onClick={() => {
+                            navigate("/recommendations", { state: { country: currentCountryName, city: currentCity } })
+                        }}>Check recommendations and events</Button>
                         <Button href="mailto:support@example.com?subject=I%20can't%20see%20a%20city" target="_blank">
                             Can't see a city?
                         </Button>

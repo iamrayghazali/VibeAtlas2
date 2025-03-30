@@ -125,7 +125,7 @@ function Login() {
 
                 <Button
                     variant="text"
-                    onClick={() => navigate("/registration")}
+                    onClick={() => navigate("/register")}
                     sx={{
                         textTransform: "none",
                         position: "absolute",
