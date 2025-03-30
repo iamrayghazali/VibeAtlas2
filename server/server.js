@@ -4,6 +4,7 @@ const authRoutes = require('./routes/auth');  // Import your auth routes
 const surveyRoutes = require("./routes/survey");
 const recommendationsRoutes = require("./routes/recommendations"); // Import your recommendations routes
 const userRoutes = require('./routes/user'); // Import your new user routes
+const searchHistory = require('./routes/serachHistory');
 
 const {json} = require("body-parser"); // Ensure this points to your Sequelize setup
 const { initializeAssociations, sequelize } = require('./models');
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/survey', surveyRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/history', searchHistory);
 
 
 app.listen(PORT, () => {

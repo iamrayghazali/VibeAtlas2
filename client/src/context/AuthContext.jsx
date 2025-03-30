@@ -6,7 +6,8 @@ import {
     signOut,
     GoogleAuthProvider,
     signInWithRedirect,
-    signInWithPopup
+    signInWithPopup,
+    createUserWithEmailAndPassword
 } from "firebase/auth";
 import { app } from "../firebaseConfig.js";
 
