@@ -51,6 +51,8 @@ function Register() {
         setIsValidEmail(isEmail(inputEmail));
     };
 
+    //TODO fix auth
+
     return (
         <Box
             sx={{
