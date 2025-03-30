@@ -18,11 +18,16 @@ router.get('/:uid', async (req, res) => {
     }
 });
 
-// Route to create a new user
-router.post('/users', async (req, res) => {
+router.post('/new', async (req, res) => {
     try {
-        const { uid, email, displayName, photoURL } = req.body;
-        const newUser = await User.create({ uid, email, displayName, photoURL });
+        const { uid, email, name } = req.body;
+        console.log("Creating user:", uid, email, name);
+        const newUser = await User.create({
+            uid,
+            email,
+            display_name: name,
+            created_at: new Date()
+        });
         return res.status(201).json(newUser);
     } catch (error) {
         console.error("Error creating user:", error);
@@ -42,6 +47,24 @@ router.get('/survey/:uid', async (req, res) => {
     } catch (e) {
         console.error("Error fetching user:", e);
         return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.get('/user-id/:uid', async (req, res) => {
+    try {
+        const user = await User.findOne({
+            where: { uid: req.params.uid },
+            attributes: ['id'],  // Only select the id column
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({ id: user.id });  // Send back the user id
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 

@@ -1,29 +1,81 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
-import {Box, CircularProgress, Typography, Paper, Button, Divider} from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Box, CircularProgress, Typography, Paper, Button, Divider, Skeleton } from "@mui/material";
 import { motion } from "framer-motion";
+import SearchHistory from "../components/SearchHistory.jsx";
+import Navbar from "../components/Navbar.jsx";
 
 const Recommendations = () => {
     const [recommendations, setRecommendations] = useState([]);
+    const [eventRecommendations, setEventRecommendations] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [city, setCity] = useState("Yemen");
-    const [country, setCountry] = useState("Sana'a");
+    const [selectedTab, setSelectedTab] = useState("AI");
+    const location = useLocation();
+    const [city, setCity] = useState("");
+    const [country, setCountry] = useState("");
     const [error, setError] = useState(null);
     const { user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (location.state.country && location.state.city !== "") {
+            setCountry(location.state.country);
+            setCity(location.state.city);
+        } else {
+            navigate("/location");
+        }
+    }, [location.state]);
+
+    useEffect(() => {
         if (!user) {
             setLoading(false);
         }
-        // to make sure no API call is made before user is authenticated
-        if (user) {
-            getAIRecommendations().then(() => console.log("AI recommendations function ran."));
+        if (user && city && country) {
+            // Fetch recommendations when user, city, and country are available
+            getAIRecommendations().then(() => {console.log("Ai recommendations ran")})
+            getEventRecommendations(city).then(() => {console.log("Event recommendations ran")})
         }
+    }, [user, city, country]);
 
-    }, [user, city, country]); // Depend on user, city, and country
+    const createEventRecommendationStructure = (data) => {
+        if ('_embedded' in data) {
+            const events = data._embedded.events;
+            const eventNamesSet = new Set();
+            const formattedEvents = events.map(event => {
+                if (eventNamesSet.has(event.name)) {
+                    return [];
+                }
+                eventNamesSet.add(event.name);
+                const eventData = {
+                    name: event.name || "N/A",
+                    url: event.url || "N/A",
+                    startDate: `${event.dates.start.localDate} ${event.dates.start.localTime.slice(0, 5)}`,
+                    price: event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A"
+                };
+                return eventData;
+            }).filter(event => event !== null);
+            return formattedEvents;
+        } else {
+            return [];
+        }
+    };
+
+    const getEventRecommendations = async (city) => {
+        try {
+            axios.get(`http://127.0.0.1:7050/api/recommendations/events?location=${city}`)
+                .then((response) => {
+                    setEventRecommendations(createEventRecommendationStructure(response.data));
+                })
+                .catch((error) => {
+                    console.error("Error fetching recommendations:", error);
+                    setError("We could not fetch EVENT recommendations, please try again later.");
+                });
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     const getAIRecommendations = async () => {
         setLoading(true);
@@ -40,17 +92,18 @@ const Recommendations = () => {
             });
     };
 
-    function createGoogleMapsLink(latitude, longitude) {
+    const createGoogleMapsLink = (latitude, longitude) => {
         if (latitude && longitude) {
             return `https://www.google.com/maps?q=${latitude},${longitude}`;
         }
         return '#';
-    }
-
-    if (!user) return <Typography variant={"h3"} sx={{textAlign: "center"}}>Please log in to see recommendations.</Typography>;
+    };
 
     return (
+        <>
+            <Navbar></Navbar>
         <Box sx={{ width: '100%', padding: '2rem', backgroundColor: '#121212', minHeight: '100vh' }}>
+            <SearchHistory></SearchHistory>
             <Paper sx={{
                 padding: "2rem",
                 borderRadius: "12px",
@@ -62,94 +115,148 @@ const Recommendations = () => {
                 maxWidth: '800px',
                 margin: '0 auto'
             }} elevation={4}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                    <Button
+                        onClick={() => setSelectedTab("AI")}
+                        sx={{
+                            textDecoration: selectedTab === "AI" ? "underline" : "none",
+                            color: "#fff",
+                            fontWeight: 600,
+                            margin: "0 1rem"
+                        }}>
+                        AI Recommendations
+                    </Button>
+                    <Button
+                        onClick={() => setSelectedTab("Event")}
+                        sx={{
+                            textDecoration: selectedTab === "Event" ? "underline" : "none",
+                            color: "#fff",
+                            fontWeight: 600,
+                            margin: "0 1rem"
+                        }}>
+                        Event Recommendations
+                    </Button>
+                </Box>
                 {loading ? (
-                    <>
-                        <Button variant={"contained"} onClick={() => navigate("/location")}>Change country</Button>
-                        <Typography variant="h6"> choosen yountry here</Typography>
-                        <Typography variant="h4" sx={{ fontWeight: 600, color: "#fff", marginBottom: "1.5rem" }}>
-                            Your Personalized Recommendations
-                        </Typography>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-                            <CircularProgress size="4rem" />
-                        </Box>
-                    </>
+                    <Skeleton variant="rounded" width="100%" height={300} />
                 ) : (
                     <>
-                        <Typography variant="h4" sx={{ fontWeight: 600, color: "#fff", marginBottom: "1.5rem" }}>
-                            Your Personalized Recommendations
-                        </Typography>
-                        <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
-
-                        <Box sx={{ width: "100%", paddingBottom: '1rem' }}>
-                            {recommendations.length === 0 ? (
-                                <Typography variant="h6" sx={{ color: "#ccc", textAlign: 'center' }}>
-                                    No recommendations found.
-                                </Typography>
-                            ) : (
-                                <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-                                    {recommendations.map((place) => (
-                                        <motion.li
-                                            key={place.id}
-                                            whileHover={{ scale: 1.03 }}
-                                            transition={{ duration: 0.2 }}
-                                            style={{ marginBottom: '1rem', listStyle: 'none' }}
-                                        >
-                                            <Paper
-                                                sx={{
+                        {selectedTab === "AI" && (
+                            <Box sx={{ width: "100%", paddingBottom: '1rem' }}>
+                                {recommendations.length === 0 ? (
+                                    <Typography variant="h6" sx={{ color: "#ccc", textAlign: 'center' }}>
+                                        No recommendations found.
+                                    </Typography>
+                                ) : (
+                                    <motion.ul style={{listStyleType: 'none'}} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+                                        {recommendations.map((place) => (
+                                            <motion.li key={place.id} whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
+                                                <Paper sx={{
                                                     padding: '1.5rem',
                                                     borderRadius: '12px',
                                                     backgroundColor: '#2a2a2a',
                                                     boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
                                                     marginBottom: "1rem",
                                                     color: '#fff'
-                                                }}
-                                                elevation={3}
-                                            >
-                                                <Typography variant="body1" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
-                                                    {place.location}
-                                                </Typography>
-                                                <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: '0.5rem' }}>
-                                                    {place.name}
-                                                </Typography>
-                                                <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
+                                                }} elevation={3}>
+                                                    <Typography variant="body1" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
+                                                        {place.location}
+                                                    </Typography>
+                                                    <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: '0.5rem' }}>
+                                                        {place.name}
+                                                    </Typography>
+                                                    <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
+                                                    <Typography variant="body2" sx={{ color: '#ccc', marginBottom: '0.5rem' }}>
+                                                        {place.description}
+                                                    </Typography>
+                                                    <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
+                                                        Category: {place.category}
+                                                    </Typography>
+                                                    <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '1rem' }}>
+                                                        Price: {place.price}
+                                                    </Typography>
+                                                    {place.coordinates && (
+                                                        <Button
+                                                            variant="outlined"
+                                                            sx={{
+                                                                color: '#2196f3',
+                                                                borderColor: '#2196f3',
+                                                                '&:hover': { backgroundColor: '#2196f3', color: '#fff' }
+                                                            }}
+                                                            href={createGoogleMapsLink(place.coordinates.latitude, place.coordinates.longitude)}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            View on Google Maps
+                                                        </Button>
+                                                    )}
+                                                </Paper>
+                                            </motion.li>
+                                        ))}
+                                    </motion.ul>
+                                )}
+                            </Box>
+                        )}
 
-                                                <Typography variant="body2" sx={{ color: '#ccc', marginBottom: '0.5rem' }}>
-                                                    {place.description}
-                                                </Typography>
-                                                <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
-                                                    Category: {place.category}
-                                                </Typography>
-                                                <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '1rem' }}>
-                                                    Price: {place.price}
-                                                </Typography>
-                                                {place.coordinates && (
+                        {selectedTab === "Event" && (
+                            <Box sx={{ width: "100%", paddingBottom: '1rem' }}>
+                                {eventRecommendations.length === 0 ? (
+                                    <Typography variant="h6" sx={{ color: "#ccc", textAlign: 'center' }}>
+                                        No event at this location 😔
+                                    </Typography>
+                                ) : (
+                                    <motion.ul style={{listStyleType: 'none'}}  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+                                        {eventRecommendations.map((place, index) => (
+                                            <motion.li key={index} whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
+                                                <Paper sx={{
+                                                    padding: '1.5rem',
+                                                    borderRadius: '12px',
+                                                    backgroundColor: '#2a2a2a',
+                                                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
+                                                    marginBottom: "1rem",
+                                                    color: '#fff'
+                                                }} elevation={3}>
+                                                    <Typography variant="body1" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
+                                                        {city}
+                                                    </Typography>
+                                                    <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: '0.5rem' }}>
+                                                        {place.name}
+                                                    </Typography>
+                                                    <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
+                                                    <Typography variant="body2" sx={{ color: '#ccc', marginBottom: '0.5rem' }}>
+                                                        {place.startDate}
+                                                    </Typography>
+                                                    {place.price !== "N/A" && (
+                                                        <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '1rem' }}>
+                                                            Price: {place.price}
+                                                        </Typography>
+                                                    )}
                                                     <Button
                                                         variant="outlined"
                                                         sx={{
                                                             color: '#2196f3',
                                                             borderColor: '#2196f3',
-                                                            '&:hover': {
-                                                                backgroundColor: '#2196f3',
-                                                                color: '#fff'
-                                                            }
+                                                            '&:hover': { backgroundColor: '#2196f3', color: '#fff' }
                                                         }}
-                                                        href={createGoogleMapsLink(place.coordinates.latitude, place.coordinates.longitude)}
+                                                        href={place.url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                     >
-                                                        View on Google Maps
+                                                        Get tickets
                                                     </Button>
-                                                )}
-                                            </Paper>
-                                        </motion.li>
-                                    ))}
-                                </motion.ul>
-                            )}
-                        </Box>
+                                                </Paper>
+                                            </motion.li>
+                                        ))}
+                                    </motion.ul>
+                                )}
+                            </Box>
+                        )}
                     </>
                 )}
             </Paper>
         </Box>
+        </>
+
     );
 };
 

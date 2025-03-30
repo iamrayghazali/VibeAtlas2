@@ -14,14 +14,14 @@ const User = sequelize.define('User', {
     },
     display_name: {
         type: DataTypes.STRING,
-    },created_at: {
+    },
+    created_at: {
         type: DataTypes.DATE,
     }
 }, {
     tableName: 'users',  // Explicit table name
     createdAt: 'created_at',  // Map Sequelize's createdAt to your column
     timestamps: false  // Disable timestamps
-
 });
 
 const SurveyQuestion = sequelize.define('SurveyQuestion', {
@@ -33,7 +33,8 @@ const SurveyQuestion = sequelize.define('SurveyQuestion', {
     question_text: {
         type: DataTypes.STRING,
         allowNull: false
-    }}, {
+    }
+}, {
     tableName: 'survey_questions',
     timestamps: false  // Disable timestamps
 });
@@ -51,10 +52,10 @@ const SurveyOption = sequelize.define('SurveyOption', {
     option_text: {
         type: DataTypes.STRING,
         allowNull: false
-    }}, {
+    }
+}, {
     tableName: 'survey_options',  // Explicit table name
     timestamps: false  // Disable timestamps
-
 });
 
 const SurveyResponse = sequelize.define('SurveyResponse', {
@@ -62,8 +63,31 @@ const SurveyResponse = sequelize.define('SurveyResponse', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    }}, {
+    }
+}, {
     tableName: 'survey_responses',
+    timestamps: false  // Disable timestamps
+});
+
+const SearchHistory = sequelize.define('SearchHistory', {
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    city: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    searched_at: {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
+}, {
+    tableName: 'search_history',  // Explicit table name
     timestamps: false  // Disable timestamps
 });
 
@@ -95,6 +119,12 @@ function initializeAssociations() {
         foreignKey: 'option_id',
         as: 'option'
     });
+
+    // Add association for SearchHistory
+    SearchHistory.belongsTo(User, {
+        foreignKey: 'user_id',
+        as: 'user'
+    });
 }
 
 module.exports = {
@@ -103,5 +133,6 @@ module.exports = {
     SurveyQuestion,
     SurveyOption,
     SurveyResponse,
+    SearchHistory,  // Export SearchHistory model
     initializeAssociations
 };

@@ -103,15 +103,11 @@ async function getTravelRecommendations(userPreferences, city, country) {
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
 
-        console.log("Raw AI Response:", responseText);
-
         // Try multiple parsing strategies
         try {
-            // First, try direct JSON parsing
             return JSON.parse(responseText);
         } catch (firstParseError) {
             try {
-                // Try extracting JSON from code blocks
                 const jsonMatch = responseText.match(/```json\n([\s\S]*?)```/);
                 if (jsonMatch) {
                     return JSON.parse(jsonMatch[1]);
@@ -119,7 +115,6 @@ async function getTravelRecommendations(userPreferences, city, country) {
             } catch (secondParseError) {}
 
             try {
-                // Try extracting JSON from between first { and last }
                 const jsonExtractMatch = responseText.match(/\{[\s\S]*\}/);
                 if (jsonExtractMatch) {
                     return JSON.parse(jsonExtractMatch[0]);

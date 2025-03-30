@@ -10,6 +10,7 @@ function Login() {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const [isValidEmail, setIsValidEmail] = useState(true);
+    const { user } = useAuth();
 
     useEffect(() => {
         if (currentUser) {
@@ -34,6 +35,13 @@ function Login() {
         setEmail(inputEmail);
         setIsValidEmail(isEmail(inputEmail));
     };
+
+    useEffect(() => {
+        if (user && user.uid) {
+            navigate("/location");
+        }
+    }, [user]);
+
 
     return (
         <Box
@@ -120,12 +128,26 @@ function Login() {
                         >
                             Login
                         </Button>
+                        <Button
+                            variant="contained"
+                            sx={{
+                                flex: 1,
+                                mr: 1,
+                                fontSize: "1.1rem",
+                                textTransform: "none",
+                                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+                                "&:hover": { background: "linear-gradient(135deg, #fda085, #f6d365)" },
+                            }}
+                            onClick={googleLogin}
+                        >
+                            Login with google
+                        </Button>
                     </Box>
                 </form>
 
                 <Button
                     variant="text"
-                    onClick={() => navigate("/registration")}
+                    onClick={() => navigate("/register")}
                     sx={{
                         textTransform: "none",
                         position: "absolute",

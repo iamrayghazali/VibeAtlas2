@@ -1,15 +1,17 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "../context/AuthContext.jsx";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 import axios from "axios";
-import {Button, Typography} from "@mui/material";
+import { Button, Typography, TextField } from "@mui/material";
+import Navbar from "../components/Navbar.jsx";
 
 function Home() {
     const navigate = useNavigate();
-    const user = useAuth();
+    const { user } = useAuth();
     const [surveyIsFilled, setSurveyIsFilled] = useState(null);
 
     useEffect(() => {
+        // Fetch survey data on user login
         if (user && user.uid) {
             axios.get(`/api/user/survey/${user.uid}`)
                 .then(res => {
@@ -28,12 +30,14 @@ function Home() {
         }
     }, [surveyIsFilled, navigate]);
 
+    const handleCountryChange = (event) => {
+        const selectedCountry = event.target.value;
+        setCurrentCountryAbrv(selectedCountry);
+    };
+
     return (
-/*  TODO:
-    - get city names api call
-    - fix backend route error handling
-    - /location design
-    - /home design */
+        <>
+            <Navbar></Navbar>
         <div>
             <Typography variant={"h2"}>What’s the move?</Typography>
             <Typography variant={"subtitle1"}>From ‘what’s the move?’ to ‘we out’—AI makes it easy.</Typography>
@@ -41,6 +45,7 @@ function Home() {
                 user ? (
                     <>
                         <Button variant="contained" onClick={() => navigate("/location")}>Go to Recommendations</Button>
+
                     </>
                 ) : (
                     <>
@@ -50,6 +55,8 @@ function Home() {
                 )
             }
         </div>
+        </>
+
     );
 }
 
