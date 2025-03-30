@@ -31,7 +31,6 @@ async function getEventRecommendations(location) {
         if (!response.data) {
             return false;
         }
-        console.log("Events:", response.data);
         return response.data;  // Return the event data
     } catch (error) {
         console.error("Error fetching event recommendations:", error);
@@ -52,7 +51,6 @@ async function getCoordinates(location) {
         // Check if a valid result is returned
         if (response.data.results.length > 0) {
             const coordinates = response.data.results[0].geometry;
-            console.log(`${coordinates.lat},${coordinates.lng}`)
             return `${coordinates.lat},${coordinates.lng}`; // Returns "latitude,longitude"
         } else {
             throw new Error('Location not found');
