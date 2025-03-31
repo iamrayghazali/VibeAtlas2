@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
 import axios from "axios";
-import {Button, Typography, Container, Box} from "@mui/material";
+import {Button, Typography, Container, Box, Grid, Divider} from "@mui/material";
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -11,6 +11,16 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import Navbar from "../components/Navbar.jsx";
 import bgImage from "../assets/window-bg.jpg";
+import {motion} from "framer-motion";
+import CircularText from '../components/CircularText';
+import '../index.css';
+import logo from "../assets/logo.png";
+import ShinyText from "../components/ShinyText.jsx";
+import CountUp from '../components/CountUp.jsx'
+import TiltedCard from "../components/TiteledCard.jsx";
+import RowOfCities from "../components/RowOfCities.jsx";
+import RowOfNumbers from "../components/RowOfNumbers.jsx";
+import ScrollReveal from "../components/ScrollReveal.jsx";
 
 
 function Home() {
@@ -49,7 +59,7 @@ function Home() {
             <Container sx={{
                 backgroundImage: `url(${bgImage})`,
                 backgroundSize: "cover",
-                backgroundPosition: "center", minHeight: "calc(100vh - 55px)", minWidth: "100%"
+                backgroundPosition: "center", minHeight: "calc(100vh - 55px)", minWidth: "100%",
             }}>
                 <Box sx={{
                     position: "absolute",
@@ -61,20 +71,26 @@ function Home() {
                     alignItems: "center",
                     textAlign: "center"
                 }}>
-                    <Typography
-                        variant="h3"
-                        sx={{
-                            fontFamily: "Oswald",
-                            lineHeight: "0.9",
-                            margin: "2rem",
-                            fontWeight: "bold",
-                            display: "inline-block",  // Prevents wrapping if there’s enough space
-                            whiteSpace: "nowrap",     // Prevents line break
-                            overflow: "hidden",       // Ensures that overflowing content is hidden (if necessary)
-                        }}
+                    <motion.div
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.6, ease: "easeOut"}}
                     >
-                        What’s the move?
-                    </Typography>
+                        <Typography
+                            variant="h3"
+                            sx={{
+                                fontFamily: "Oswald",
+                                lineHeight: "0.9",
+                                margin: "2rem",
+                                fontWeight: "bold",
+                                display: "inline-block",  // Prevents wrapping if there’s enough space
+                                whiteSpace: "nowrap",     // Prevents line break
+                                overflow: "hidden",       // Ensures that overflowing content is hidden (if necessary)
+                            }}
+                        >
+                            What’s the move?
+                        </Typography>
+                    </motion.div>
                     <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "darkgrey"}}>
                         From ‘what’s the move?’ to ‘we out’—AI makes it easy.
                     </Typography>
@@ -103,9 +119,71 @@ function Home() {
                     }
                 </Box>
             </Container>
+            <Container sx={{
+                minHeight: "calc(100vh - 55px)",
+                fontFamily: "Lato",
+                backgroundColor: "black",
+                minWidth: "100%",
+                margin: "0",
+                borderTop: "1rem",
+                borderColor: "white"
+            }}>
+                <Box id="info-section" sx={{
+                    padding: "3rem",
+                    display: "grid",
+                    gridTemplateColumns: "1fr",  // Default to single column for mobile
+                    gap: "16px",
+                    justifyItems: "center",
+                    // Tailwind classes to manage layout responsiveness
+                    "@media (min-width: 768px)": {
+                        gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
+                    }
+                }}>
+                    <CircularText
+                        text="VIBE*ATLAS*VIBE*ATLAS*"
+                        onHover="speedUp"
+                        spinDuration={20}
+                        className="custom-class"
+                    />
+                    <ScrollReveal
+                        baseOpacity={0}
+                        enableBlur={true}
+                        baseRotation={4}
+                        blurStrength={100}
+                    >
+                        When does a man die? When he is hit by a bullet? No! When he suffers a disease?
+                        No! When he ate a soup made out of a poisonous mushroom?
+                        No! A man dies when he is forgotten!
+                    </ScrollReveal>
+                </Box>
+            </Container>
+            <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato"}}>
+                <RowOfNumbers/>
+                <RowOfCities/>
+            </Container>
+            <Container sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "black"
+            }}>
+                <Box>
+
+                    <Box component="img" src={logo} alt="Logo" sx={{height: 250, cursor: "pointer"}}
+                         onClick={() => navigate("/")}/>
+
+                </Box>
+                <ShinyText text="Select Location" disabled={false} speed={3}/>
+                <Box sx={{backgroundColor: "black"}}>
+
+
+                </Box>
+
+            </Container>
             <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato"}}>
                 <Box id="guide-section" sx={{}}>
-                    <Typography component={"h4"}> Quick Guide</Typography>
+                    <Typography component={"h4"} sx={{}}>Quick Guide</Typography>
                     <Timeline>
                         <TimelineItem>
                             <TimelineSeparator>
@@ -128,7 +206,7 @@ function Home() {
                                 <TimelineDot/>
                                 <TimelineConnector/>
                             </TimelineSeparator>
-                            <TimelineContent> 📍Pick Location  - (30 seconds)</TimelineContent>
+                            <TimelineContent> 📍Pick Location - (30 seconds)</TimelineContent>
                         </TimelineItem>
                         <TimelineItem>
                             <TimelineSeparator>
@@ -138,16 +216,10 @@ function Home() {
                         </TimelineItem>
 
                     </Timeline>
-                </Box>
-            </Container>
-            <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato"}}>
-                <Box id="about-section" sx={{
-
-                }}>
 
                 </Box>
             </Container>
-            </>
+        </>
 
     );
 }
