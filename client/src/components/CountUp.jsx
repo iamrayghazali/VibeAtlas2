@@ -12,6 +12,7 @@ export default function CountUp({
                                     separator = "",
                                     onStart,
                                     onEnd,
+                                    addPlus = false,
                                 }) {
     const ref = useRef(null);
     const motionValue = useMotionValue(direction === "down" ? to : from);
@@ -95,5 +96,10 @@ export default function CountUp({
         return () => unsubscribe();
     }, [springValue, separator]);
 
-    return <span className={`${className}`} ref={ref} />;
+    return <>
+        <div className={"flex justify-center align-center"}>
+            <span className={`${className}`} ref={ref} />
+            { addPlus ? (<h3 className="text-center pt-1 text-5xl font-thin">+</h3>) : null }
+        </div>
+    </>
 }

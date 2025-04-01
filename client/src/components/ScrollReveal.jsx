@@ -41,7 +41,7 @@ const ScrollReveal = ({
 
         gsap.fromTo(
             el,
-            { transformOrigin: '0% 50%', rotate: baseRotation },
+            { transformOrigin: '0% 100%', rotate: baseRotation },
             {
                 ease: 'none',
                 rotate: 0,
@@ -100,7 +100,7 @@ const ScrollReveal = ({
 
     return (
         <h2 ref={containerRef} className={`my-5 ${containerClassName}`}>
-            <p className={`text-3xl leading-[1.5] text-white ${textClassName}`}>{splitText}</p>
+            <p className={`text-2xl text-center leading-[1.5] text-white ${textClassName}`}>{splitText}</p>
         </h2>
     );
 };
