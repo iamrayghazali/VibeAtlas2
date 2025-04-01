@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+@theme {
+    --color-carrot: #F18F01;
+    --color-eggshell: #F0EAD6;
+}
