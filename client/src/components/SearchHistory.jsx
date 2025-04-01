@@ -4,6 +4,7 @@ import {Box, Button, Typography} from "@mui/material";
 import axios from "axios";
 import {map} from "framer-motion/m";
 import {useNavigate} from "react-router-dom";
+import AnimatedList from './AnimatedList'
 
 const SearchHistory = () => {
     const [userId, setUserId] = useState(null);
@@ -24,7 +25,7 @@ const SearchHistory = () => {
                 try {
                     const response = await axios.get(`http://127.0.0.1:7050/api/history/${userId}/searches`);
                     console.log(response.data.searchHistory);
-                    setUserHistory(response.data.searchHistory);
+                    setUserHistory(formatUserHistory(response.data.searchHistory));
                 } catch (error) {
                     console.error("Error fetching user history:", error);
                 }
@@ -33,6 +34,10 @@ const SearchHistory = () => {
             getUserHistory();
         }
     }, [userId]);
+
+    const formatUserHistory = (userHistory) => {
+        return userHistory.map(item => `${item.city}, ${item.country}`);
+    };
 
     const fetchUserId = async () => {
         try {
@@ -64,6 +69,14 @@ const SearchHistory = () => {
                     ))}
             </>) : null
             }
+            <AnimatedList
+                items={userHistory}
+                onItemSelect={(item, index) => console.log(item, index)}
+                showGradients={true}
+                enableArrowNavigation={true}
+                displayScrollbar={true}
+            />
+
         </Box>
     );
 };

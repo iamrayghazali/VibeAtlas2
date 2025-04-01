@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Box, CircularProgress, Typography, Paper, Button, Divider, Skeleton } from "@mui/material";
-import { motion } from "framer-motion";
+import {useAuth} from "../context/AuthContext.jsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import {Box, CircularProgress, Typography, Paper, Button, Divider, Skeleton} from "@mui/material";
+import {motion} from "framer-motion";
 import SearchHistory from "../components/SearchHistory.jsx";
 import Navbar from "../components/Navbar.jsx";
 
@@ -16,7 +16,7 @@ const Recommendations = () => {
     const [city, setCity] = useState("");
     const [country, setCountry] = useState("");
     const [error, setError] = useState(null);
-    const { user } = useAuth();
+    const {user} = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,9 +33,14 @@ const Recommendations = () => {
             setLoading(false);
         }
         if (user && city && country) {
+            console.log("Searching for: ", country, city);
             // Fetch recommendations when user, city, and country are available
-            getAIRecommendations().then(() => {console.log("Ai recommendations ran")})
-            getEventRecommendations(city).then(() => {console.log("Event recommendations ran")})
+            getAIRecommendations().then(() => {
+                console.log("Ai recommendations ran")
+            })
+            getEventRecommendations(city).then(() => {
+                console.log("Event recommendations ran")
+            })
         }
     }, [user, city, country]);
 
@@ -102,159 +107,187 @@ const Recommendations = () => {
     return (
         <>
             <Navbar></Navbar>
-        <Box sx={{ width: '100%', padding: '2rem', backgroundColor: '#121212', minHeight: '100vh' }}>
-            <SearchHistory></SearchHistory>
-            <Paper sx={{
-                padding: "2rem",
-                borderRadius: "12px",
-                boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2)",
-                backgroundColor: '#1d1d1d',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                maxWidth: '800px',
-                margin: '0 auto'
-            }} elevation={4}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                    <Button
-                        onClick={() => setSelectedTab("AI")}
-                        sx={{
-                            textDecoration: selectedTab === "AI" ? "underline" : "none",
-                            color: "#fff",
-                            fontWeight: 600,
-                            margin: "0 1rem"
-                        }}>
-                        AI Recommendations
-                    </Button>
-                    <Button
-                        onClick={() => setSelectedTab("Event")}
-                        sx={{
-                            textDecoration: selectedTab === "Event" ? "underline" : "none",
-                            color: "#fff",
-                            fontWeight: 600,
-                            margin: "0 1rem"
-                        }}>
-                        Event Recommendations
-                    </Button>
-                </Box>
-                {loading ? (
-                    <Skeleton variant="rounded" width="100%" height={300} />
-                ) : (
-                    <>
-                        {selectedTab === "AI" && (
-                            <Box sx={{ width: "100%", paddingBottom: '1rem' }}>
-                                {recommendations.length === 0 ? (
-                                    <Typography variant="h6" sx={{ color: "#ccc", textAlign: 'center' }}>
-                                        No recommendations found.
-                                    </Typography>
-                                ) : (
-                                    <motion.ul style={{listStyleType: 'none'}} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-                                        {recommendations.map((place) => (
-                                            <motion.li key={place.id} whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
-                                                <Paper sx={{
-                                                    padding: '1.5rem',
-                                                    borderRadius: '12px',
-                                                    backgroundColor: '#2a2a2a',
-                                                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
-                                                    marginBottom: "1rem",
-                                                    color: '#fff'
-                                                }} elevation={3}>
-                                                    <Typography variant="body1" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
-                                                        {place.location}
-                                                    </Typography>
-                                                    <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: '0.5rem' }}>
-                                                        {place.name}
-                                                    </Typography>
-                                                    <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
-                                                    <Typography variant="body2" sx={{ color: '#ccc', marginBottom: '0.5rem' }}>
-                                                        {place.description}
-                                                    </Typography>
-                                                    <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
-                                                        Category: {place.category}
-                                                    </Typography>
-                                                    <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '1rem' }}>
-                                                        Price: {place.price}
-                                                    </Typography>
-                                                    {place.coordinates && (
+            <Box sx={{
+                width: '100%',
+                padding: '2rem',
+                backgroundColor: '#121212',
+                minHeight: '100vh',
+                display: "grid",
+                gridTemplateColumns: "1fr", // Default single column for mobile
+                gap: "16px",
+                justifyItems: "center",
+                "@media (min-width: 1024px)": {
+                    gridTemplateColumns: "1fr 2fr", // 1/3 and 2/3 split on desktop
+                }
+            }}>
+                <SearchHistory></SearchHistory>
+                <Paper sx={{
+                    padding: "2rem",
+                    borderRadius: "12px",
+                    boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2)",
+                    backgroundColor: '#1d1d1d',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    maxWidth: '800px',
+                    margin: '0 auto'
+                }} elevation={4}>
+                    <Box sx={{display: 'flex', justifyContent: 'center', marginBottom: '1.5rem'}}>
+                        <Button
+                            onClick={() => setSelectedTab("AI")}
+                            sx={{
+                                textDecoration: selectedTab === "AI" ? "underline" : "none",
+                                color: "#fff",
+                                fontWeight: 600,
+                                margin: "0 1rem"
+                            }}>
+                            AI Recommendations
+                        </Button>
+                        <Button
+                            onClick={() => setSelectedTab("Event")}
+                            sx={{
+                                textDecoration: selectedTab === "Event" ? "underline" : "none",
+                                color: "#fff",
+                                fontWeight: 600,
+                                margin: "0 1rem"
+                            }}>
+                            Event Recommendations
+                        </Button>
+                    </Box>
+                    {loading ? (
+                        <Skeleton variant="rounded" width="100%" height={300}/>
+                    ) : (
+                        <>
+                            {selectedTab === "AI" && (
+                                <Box sx={{width: "100%", paddingBottom: '1rem'}}>
+                                    {recommendations.length === 0 ? (
+                                        <Typography variant="h6" sx={{color: "#ccc", textAlign: 'center'}}>
+                                            No recommendations found.
+                                        </Typography>
+                                    ) : (
+                                        <motion.ul style={{listStyleType: 'none'}} initial={{opacity: 0}}
+                                                   animate={{opacity: 1}} transition={{duration: 1}}>
+                                            {recommendations.map((place) => (
+                                                <motion.li key={place.id} whileHover={{scale: 1.03}}
+                                                           transition={{duration: 0.2}}>
+                                                    <Paper sx={{
+                                                        padding: '1.5rem',
+                                                        borderRadius: '12px',
+                                                        backgroundColor: '#2a2a2a',
+                                                        boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
+                                                        marginBottom: "1rem",
+                                                        color: '#fff'
+                                                    }} elevation={3}>
+                                                        <Typography variant="body1"
+                                                                    sx={{color: '#aaa', marginBottom: '0.5rem'}}>
+                                                            {place.location}
+                                                        </Typography>
+                                                        <Typography variant="h5"
+                                                                    sx={{fontWeight: 500, marginBottom: '0.5rem'}}>
+                                                            {place.name}
+                                                        </Typography>
+                                                        <Divider sx={{borderColor: "rgba(255,255,255,0.2)", mb: 3}}/>
+                                                        <Typography variant="body2"
+                                                                    sx={{color: '#ccc', marginBottom: '0.5rem'}}>
+                                                            {place.description}
+                                                        </Typography>
+                                                        <Typography variant="body2"
+                                                                    sx={{color: '#aaa', marginBottom: '0.5rem'}}>
+                                                            Category: {place.category}
+                                                        </Typography>
+                                                        <Typography variant="body2"
+                                                                    sx={{color: '#aaa', marginBottom: '1rem'}}>
+                                                            Price: {place.price}
+                                                        </Typography>
+                                                        {place.coordinates && (
+                                                            <Button
+                                                                variant="outlined"
+                                                                sx={{
+                                                                    color: '#2196f3',
+                                                                    borderColor: '#2196f3',
+                                                                    '&:hover': {
+                                                                        backgroundColor: '#2196f3',
+                                                                        color: '#fff'
+                                                                    }
+                                                                }}
+                                                                href={createGoogleMapsLink(place.coordinates.latitude, place.coordinates.longitude)}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                View on Google Maps
+                                                            </Button>
+                                                        )}
+                                                    </Paper>
+                                                </motion.li>
+                                            ))}
+                                        </motion.ul>
+                                    )}
+                                </Box>
+                            )}
+
+                            {selectedTab === "Event" && (
+                                <Box sx={{width: "100%", paddingBottom: '1rem'}}>
+                                    {eventRecommendations.length === 0 ? (
+                                        <Typography variant="h6" sx={{color: "#ccc", textAlign: 'center'}}>
+                                            No event at this location 😔
+                                        </Typography>
+                                    ) : (
+                                        <motion.ul style={{listStyleType: 'none'}} initial={{opacity: 0}}
+                                                   animate={{opacity: 1}} transition={{duration: 1}}>
+                                            {eventRecommendations.map((place, index) => (
+                                                <motion.li key={index} whileHover={{scale: 1.03}}
+                                                           transition={{duration: 0.2}}>
+                                                    <Paper sx={{
+                                                        padding: '1.5rem',
+                                                        borderRadius: '12px',
+                                                        backgroundColor: '#2a2a2a',
+                                                        boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
+                                                        marginBottom: "1rem",
+                                                        color: '#fff'
+                                                    }} elevation={3}>
+                                                        <Typography variant="body1"
+                                                                    sx={{color: '#aaa', marginBottom: '0.5rem'}}>
+                                                            {city}
+                                                        </Typography>
+                                                        <Typography variant="h5"
+                                                                    sx={{fontWeight: 500, marginBottom: '0.5rem'}}>
+                                                            {place.name}
+                                                        </Typography>
+                                                        <Divider sx={{borderColor: "rgba(255,255,255,0.2)", mb: 3}}/>
+                                                        <Typography variant="body2"
+                                                                    sx={{color: '#ccc', marginBottom: '0.5rem'}}>
+                                                            {place.startDate}
+                                                        </Typography>
+                                                        {place.price !== "N/A" && (
+                                                            <Typography variant="body2"
+                                                                        sx={{color: '#aaa', marginBottom: '1rem'}}>
+                                                                Price: {place.price}
+                                                            </Typography>
+                                                        )}
                                                         <Button
                                                             variant="outlined"
                                                             sx={{
                                                                 color: '#2196f3',
                                                                 borderColor: '#2196f3',
-                                                                '&:hover': { backgroundColor: '#2196f3', color: '#fff' }
+                                                                '&:hover': {backgroundColor: '#2196f3', color: '#fff'}
                                                             }}
-                                                            href={createGoogleMapsLink(place.coordinates.latitude, place.coordinates.longitude)}
+                                                            href={place.url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                         >
-                                                            View on Google Maps
+                                                            Get tickets
                                                         </Button>
-                                                    )}
-                                                </Paper>
-                                            </motion.li>
-                                        ))}
-                                    </motion.ul>
-                                )}
-                            </Box>
-                        )}
-
-                        {selectedTab === "Event" && (
-                            <Box sx={{ width: "100%", paddingBottom: '1rem' }}>
-                                {eventRecommendations.length === 0 ? (
-                                    <Typography variant="h6" sx={{ color: "#ccc", textAlign: 'center' }}>
-                                        No event at this location 😔
-                                    </Typography>
-                                ) : (
-                                    <motion.ul style={{listStyleType: 'none'}}  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-                                        {eventRecommendations.map((place, index) => (
-                                            <motion.li key={index} whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
-                                                <Paper sx={{
-                                                    padding: '1.5rem',
-                                                    borderRadius: '12px',
-                                                    backgroundColor: '#2a2a2a',
-                                                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
-                                                    marginBottom: "1rem",
-                                                    color: '#fff'
-                                                }} elevation={3}>
-                                                    <Typography variant="body1" sx={{ color: '#aaa', marginBottom: '0.5rem' }}>
-                                                        {city}
-                                                    </Typography>
-                                                    <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: '0.5rem' }}>
-                                                        {place.name}
-                                                    </Typography>
-                                                    <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
-                                                    <Typography variant="body2" sx={{ color: '#ccc', marginBottom: '0.5rem' }}>
-                                                        {place.startDate}
-                                                    </Typography>
-                                                    {place.price !== "N/A" && (
-                                                        <Typography variant="body2" sx={{ color: '#aaa', marginBottom: '1rem' }}>
-                                                            Price: {place.price}
-                                                        </Typography>
-                                                    )}
-                                                    <Button
-                                                        variant="outlined"
-                                                        sx={{
-                                                            color: '#2196f3',
-                                                            borderColor: '#2196f3',
-                                                            '&:hover': { backgroundColor: '#2196f3', color: '#fff' }
-                                                        }}
-                                                        href={place.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        Get tickets
-                                                    </Button>
-                                                </Paper>
-                                            </motion.li>
-                                        ))}
-                                    </motion.ul>
-                                )}
-                            </Box>
-                        )}
-                    </>
-                )}
-            </Paper>
-        </Box>
+                                                    </Paper>
+                                                </motion.li>
+                                            ))}
+                                        </motion.ul>
+                                    )}
+                                </Box>
+                            )}
+                        </>
+                    )}
+                </Paper>
+            </Box>
         </>
 
     );

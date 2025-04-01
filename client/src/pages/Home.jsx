@@ -21,6 +21,7 @@ import TiltedCard from "../components/TiteledCard.jsx";
 import RowOfCities from "../components/RowOfCities.jsx";
 import RowOfNumbers from "../components/RowOfNumbers.jsx";
 import ScrollReveal from "../components/ScrollReveal.jsx";
+import Footer from "../components/Footer.jsx";
 
 
 function Home() {
@@ -41,12 +42,6 @@ function Home() {
         }
     }, [user]);
 
-    // Redirect if survey is not filled out
-    useEffect(() => {
-        if (surveyIsFilled === false) {
-            navigate("/survey");
-        }
-    }, [surveyIsFilled, navigate]);
 
     const handleCountryChange = (event) => {
         const selectedCountry = event.target.value;
@@ -57,6 +52,7 @@ function Home() {
         <>
             <Navbar></Navbar>
             <Container sx={{
+                fontFamily: "Lato",
                 backgroundImage: `url(${bgImage})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center", minHeight: "calc(100vh - 55px)", minWidth: "100%",
@@ -79,10 +75,10 @@ function Home() {
                         <Typography
                             variant="h3"
                             sx={{
-                                fontFamily: "Oswald",
+                                fontFamily: "Lato",
                                 lineHeight: "0.9",
-                                margin: "2rem",
-                                fontWeight: "bold",
+                                margin: "1rem",
+                                fontWeight: "600",
                                 display: "inline-block",  // Prevents wrapping if there’s enough space
                                 whiteSpace: "nowrap",     // Prevents line break
                                 overflow: "hidden",       // Ensures that overflowing content is hidden (if necessary)
@@ -92,22 +88,25 @@ function Home() {
                         </Typography>
                     </motion.div>
                     <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "darkgrey"}}>
-                        From ‘what’s the move?’ to ‘we out’—AI makes it easy.
+                        AI makes it easy to find vibes - that matches yours
                     </Typography>
                     {
                         user ? (
                             <>
-                                <Button variant="contained" onClick={() => navigate("/location")}>Go to
-                                    Recommendations</Button>
-
+                                <Button variant="contained" sx={{
+                                    backgroundColor: "#F18F01",
+                                    color: "black",
+                                    marginTop: "8rem",
+                                    textDecoration: "none"
+                                }} onClick={() => navigate("/location")}>Select Location</Button>
                             </>
                         ) : (
                             <>
                                 <Button variant="contained" sx={{
                                     textTransform: "none",
                                     marginTop: "2rem",
-                                    backgroundColor: "black",
-                                    color: "white",
+                                    backgroundColor: "#F18F01",
+                                    color: "black",
                                     paddingLeft: "25px",
                                     paddingRight: "25px"
                                 }} onClick={() => navigate("/register")}>Register</Button>
@@ -134,91 +133,96 @@ function Home() {
                     gridTemplateColumns: "1fr",  // Default to single column for mobile
                     gap: "16px",
                     justifyItems: "center",
-                    // Tailwind classes to manage layout responsiveness
                     "@media (min-width: 768px)": {
                         gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
-                    }
+                    },
                 }}>
                     <CircularText
                         text="VIBE*ATLAS*VIBE*ATLAS*"
                         onHover="speedUp"
                         spinDuration={20}
-                        className="custom-class"
+                        className="custom-class mt-10 md:mt-30 text-carrot"
                     />
-                    <ScrollReveal
-                        baseOpacity={0}
-                        enableBlur={true}
-                        baseRotation={4}
-                        blurStrength={100}
-                    >
-                        When does a man die? When he is hit by a bullet? No! When he suffers a disease?
-                        No! When he ate a soup made out of a poisonous mushroom?
-                        No! A man dies when he is forgotten!
-                    </ScrollReveal>
+                    <Box sx={{display: "grid", gridTemplateRows: "repeat(2, 1fr)", gap: "16px", marginTop: "3rem"}}>
+                        <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}} variant={"h6"}>
+                            Traveling? Looking for something fun to do? Get <span className={"text-carrot"}>AI-powered personalised</span> suggestions
+                            for places
+                            to visit: from buzzing city
+                            nights to hidden paradise escapes, we serve up instant recommendations that match <span
+                            className={"text-carrot"}> your energy</span>.
+                        </Typography>
+                        <Box sx={{
+                            display: "grid",
+                            alignItems: "center",
+                            gridTemplateColumns: "1fr",
+                            justifyItems: "center",
+                            "@media (min-width: 768px)": {
+                                gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
+                            },
+                        }}>
+                            <Button variant="contained" sx={{
+                                backgroundColor: "#F18F01",
+                                color: "black",
+                                textDecoration: "none"
+                            }} onClick={() => navigate("/location")}>Select Location</Button>
+                            <Button variant="outlined" sx={{
+                                textTransform: "none",
+                                borderColor: "white",
+                                color: "white",
+                                textDecoration: "none"
+                            }} onClick={() => navigate("/about")}>Learn More</Button>
+                        </Box>
+                        <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}} variant={"h6"}>
+                            It’s free, <span className={"text-carrot"}>effortless</span>, and actually understands your
+                            style. Whether you’re feeling city lights, beach waves, or something off the grid, we’ve got
+                            you. Skip the guesswork, find your vibe, and let VibeAtlas do the planning. 🔥
+                        </Typography>
+                    </Box>
                 </Box>
             </Container>
-            <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato"}}>
+            <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato", backgroundColor: "white", minWidth: "100%"}}>
                 <RowOfNumbers/>
                 <RowOfCities/>
             </Container>
-            <Container sx={{
-                minHeight: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "black"
-            }}>
-                <Box>
-
-                    <Box component="img" src={logo} alt="Logo" sx={{height: 250, cursor: "pointer"}}
-                         onClick={() => navigate("/")}/>
-
-                </Box>
-                <ShinyText text="Select Location" disabled={false} speed={3}/>
-                <Box sx={{backgroundColor: "black"}}>
-
-
-                </Box>
-
-            </Container>
-            <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato"}}>
-                <Box id="guide-section" sx={{}}>
-                    <Typography component={"h4"} sx={{}}>Quick Guide</Typography>
+            <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato", backgroundColor: "black", minWidth: "100%"}}>
+                <Box id="guide-section" sx={{paddingTop: "6rem"}}>
+                    <Typography variant={"h4"} sx={{paddingBottom: "3rem", textAlign: "center",  fontFamily: "Lato", color: "#F18F01", }}>Quick Guide</Typography>
                     <Timeline>
                         <TimelineItem>
-                            <TimelineSeparator>
-                                <TimelineDot/>
+                            <TimelineSeparator >
+                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
                                 <TimelineConnector/>
-                            </TimelineSeparator>
-                            <TimelineContent>
+                            </TimelineSeparator >
+                            <TimelineContent sx={{fontFamily: "Lato", color: "white"}}>
                                 📝 Register - (1 min)
                             </TimelineContent>
                         </TimelineItem>
                         <TimelineItem>
                             <TimelineSeparator>
-                                <TimelineDot/>
+                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
                                 <TimelineConnector/>
                             </TimelineSeparator>
-                            <TimelineContent>✍🏼 Fill out Survey - (1.5 min) </TimelineContent>
+                            <TimelineContent  sx={{fontFamily: "Lato", color: "white"}}>✍🏼 Fill out Survey - (1.5 min) </TimelineContent>
                         </TimelineItem>
                         <TimelineItem>
                             <TimelineSeparator>
-                                <TimelineDot/>
+                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
                                 <TimelineConnector/>
                             </TimelineSeparator>
-                            <TimelineContent> 📍Pick Location - (30 seconds)</TimelineContent>
+                            <TimelineContent  sx={{fontFamily: "Lato", color: "white"}}> 📍Pick Location - (30 seconds)</TimelineContent>
                         </TimelineItem>
                         <TimelineItem>
                             <TimelineSeparator>
-                                <TimelineDot/>
+                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
                             </TimelineSeparator>
-                            <TimelineContent>See Recommendations! 🚀</TimelineContent>
+                            <TimelineContent  sx={{fontFamily: "Lato", color: "white"}}>See Recommendations! 🚀</TimelineContent>
                         </TimelineItem>
 
                     </Timeline>
 
                 </Box>
             </Container>
+            <Footer />
         </>
 
     );

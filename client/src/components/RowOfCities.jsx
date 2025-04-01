@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import TiltedCard from "./TiteledCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -19,7 +19,7 @@ const RowOfCities = () => {
     const navigate = useNavigate(); // Declare navigate function
 
     return (
-        <Box sx={{ textAlign: "center", marginBottom: "2rem" }}>
+        <Box sx={{ textAlign: "center", paddingBottom: "10rem", marginTop: "6rem" }}>
             {/* Title with smooth whoosh effect */}
             <motion.div
                 className="title-container"
@@ -27,23 +27,29 @@ const RowOfCities = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 100, damping: 25 }}
                 sx={{
-                    fontSize: "140px",
                     fontWeight: "bold",
                     textTransform: "uppercase",
                     marginBottom: "2rem",
                     color: "#333"
                 }}
             >
-                Explore Popular Destinations
+                <Typography variant="h3" sx={{color: "", fontFamily: "Lato"}}>
+                    Explore Popular Destinations
+                </Typography>
             </motion.div>
 
             {/* Cards Grid */}
             <Box sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", // Adjusted for more space
+                gridTemplateColumns: {
+                    xs: "1fr",       // 1 column on extra small screens
+                    sm: "repeat(2, 1fr)",  // 2 columns on small screens
+                    lg: "repeat(4, 1fr)",  // 4 columns on large screens
+                },
                 gap: "16px",
                 marginTop: "4rem",
                 justifyItems: "center", // Ensure items are centered
+                alignItems: "center",
             }}>
                 {data.map((item, index) => (
                     <Box key={index} sx={{cursor: "pointer"}} onClick={() => navigate("/recommendations", { state: { country: item.country, city: item.city } })}>
@@ -69,7 +75,7 @@ const RowOfCities = () => {
                         />
                     </Box>
                 ))}
-            </Box>
+                </Box>
         </Box>
     );
 };

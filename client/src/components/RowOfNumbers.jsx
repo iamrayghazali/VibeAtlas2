@@ -2,15 +2,23 @@ import {Box, Container, Divider, Typography} from "@mui/material";
 import CountUp from "./CountUp.jsx";
 import RowOfCities from "./RowOfCities.jsx";
 import React from "react";
+import { motion } from "framer-motion";
 
 
 const RowOfNumbers = () => {
     return (
         <>
+        <motion.div
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 25 }}
+        >
             <Container>
                     <Box
                         id="info-section"
                         sx={{
+                            fontFamily: "Lato",
+                            paddingTop: "6rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(3, 1fr)",
                             gap: "2rem",
@@ -30,9 +38,11 @@ const RowOfNumbers = () => {
                                 separator=","
                                 direction="up"
                                 duration={1}
-                                className="count-up-text font-thin text-8xl"
+                                className="count-up-text font-thin text-6xl text-carrot"
                             />
                             <Divider sx={{ margin: "1rem", backgroundColor: "black" }} />
+
+
                             <Typography
                                 variant={"h4"}
                                 sx={{
@@ -51,12 +61,13 @@ const RowOfNumbers = () => {
 
                         <Box>
                             <CountUp
+                                addPlus={true}
                                 from={0}
                                 to={10000}
                                 separator=","
                                 direction="up"
                                 duration={1}
-                                className="count-up-text font-thin text-8xl"
+                                className="count-up-text font-thin text-6xl text-carrot"
                             />
                             <Divider sx={{ margin: "1rem", backgroundColor: "black" }} />
                             <Typography
@@ -82,7 +93,7 @@ const RowOfNumbers = () => {
                                 separator=","
                                 direction="up"
                                 duration={1}
-                                className="count-up-text font-thin text-8xl"
+                                className="count-up-text font-thin text-6xl text-carrot"
                             />
                             <Divider sx={{ margin: "1rem", backgroundColor: "black" }} />
                             <Typography
@@ -102,6 +113,8 @@ const RowOfNumbers = () => {
                         </Box>
                     </Box>
             </Container>
+        </motion.div>
+
         </>
     )
 }

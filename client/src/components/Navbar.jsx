@@ -85,7 +85,7 @@ const Navbar = () => {
                     <Divider />
                     <Divider />
                     <List>
-                        <ListItem button onClick={() => navigate("/select-location")}>
+                        <ListItem button onClick={() => navigate("/location")}>
                             <ListItemText primary="Select Location" />
                         </ListItem>
                         <Divider />
