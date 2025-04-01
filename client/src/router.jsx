@@ -6,6 +6,7 @@ import ErrorElement from "./pages/ErrorElement";
 import Survey from "./pages/Survey.jsx";
 import Recommendations from "./pages/Recommendations.jsx";
 import SelectLocation from "./pages/SelectLocation.jsx";
+import './index.css';
 
 const router = createBrowserRouter([
     {
