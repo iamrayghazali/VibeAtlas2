@@ -24,8 +24,8 @@ router.get('/:userId/searches', async (req, res) => {
 
 router.post('/:userId/searches', async (req, res) => {
     try {
-        const { country, city } = req.body;  // Assuming country and city are sent in the body
-        const { userId } = req.params;  // Extract the userId from the route parameter
+        const { country, city } = req.body;
+        const { userId } = req.params;
 
         if (!country || !city) {
             return res.status(400).json({ message: 'Country and City are required' });
