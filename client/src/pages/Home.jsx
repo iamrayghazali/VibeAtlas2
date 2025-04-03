@@ -2,30 +2,21 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
 import axios from "axios";
-import {Button, Typography, Container, Box, Grid, Divider} from "@mui/material";
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
+import {Button, Typography, Container, Box, Grid, Divider, CircularProgress} from "@mui/material";
 import Navbar from "../components/Navbar.jsx";
 import bgImage from "../assets/window-bg.jpg";
 import {motion} from "framer-motion";
 import CircularText from '../components/CircularText';
 import '../index.css';
-import logo from "../assets/logo.png";
-import ShinyText from "../components/ShinyText.jsx";
-import CountUp from '../components/CountUp.jsx'
-import TiltedCard from "../components/TiteledCard.jsx";
 import RowOfCities from "../components/RowOfCities.jsx";
 import RowOfNumbers from "../components/RowOfNumbers.jsx";
-import ScrollReveal from "../components/ScrollReveal.jsx";
 import Footer from "../components/Footer.jsx";
+import Stepper, { Step } from '../components/Stepper.jsx';
 
 
 function Home() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     const {user} = useAuth();
     const [surveyIsFilled, setSurveyIsFilled] = useState(null);
 
@@ -42,15 +33,33 @@ function Home() {
         }
     }, [user]);
 
-
     const handleCountryChange = (event) => {
         const selectedCountry = event.target.value;
         setCurrentCountryAbrv(selectedCountry);
     };
 
+    useEffect(() => {
+        if (user && user.uid) {
+            setLoading(false);
+        }
+    }, [user])
+
     return (
         <>
-            <Navbar></Navbar>
+            { loading ?
+                (
+                    <>
+                        <Box sx={{position: "absolute", top: "40%", left: "40%", maxHeight: "100vh" }}>
+                            <CircularProgress size={"3rem"} color={"inherit"} />
+                        </Box>
+                    </>
+                )
+                : (
+                <>
+
+            <Navbar>
+
+            </Navbar>
             <Container sx={{
                 fontFamily: "Lato",
                 backgroundImage: `url(${bgImage})`,
@@ -75,6 +84,7 @@ function Home() {
                         <Typography
                             variant="h3"
                             sx={{
+                                fontSize: {xs: "2rem", md: "3rem", lg: "4rem", xl: "5rem"},
                                 fontFamily: "Lato",
                                 lineHeight: "0.9",
                                 margin: "1rem",
@@ -87,7 +97,7 @@ function Home() {
                             What’s the move?
                         </Typography>
                     </motion.div>
-                    <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "darkgrey"}}>
+                    <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "#505050"}}>
                         AI makes it easy to find vibes - that matches yours
                     </Typography>
                     {
@@ -163,7 +173,9 @@ function Home() {
                             <Button variant="contained" sx={{
                                 backgroundColor: "#F18F01",
                                 color: "black",
-                                textDecoration: "none"
+                                textDecoration: "none",
+                                fontWeight: "bold",
+                                textTransform: "none",
                             }} onClick={() => navigate("/location")}>Select Location</Button>
                             <Button variant="outlined" sx={{
                                 textTransform: "none",
@@ -185,46 +197,51 @@ function Home() {
                 <RowOfCities/>
             </Container>
             <Container sx={{minHeight: "calc(100vh - 55px)", fontFamily: "Lato", backgroundColor: "black", minWidth: "100%"}}>
-                <Box id="guide-section" sx={{paddingTop: "6rem"}}>
-                    <Typography variant={"h4"} sx={{paddingBottom: "3rem", textAlign: "center",  fontFamily: "Lato", color: "#F18F01", }}>Quick Guide</Typography>
-                    <Timeline>
-                        <TimelineItem>
-                            <TimelineSeparator >
-                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
-                                <TimelineConnector/>
-                            </TimelineSeparator >
-                            <TimelineContent sx={{fontFamily: "Lato", color: "white"}}>
-                                📝 Register - (1 min)
-                            </TimelineContent>
-                        </TimelineItem>
-                        <TimelineItem>
-                            <TimelineSeparator>
-                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
-                                <TimelineConnector/>
-                            </TimelineSeparator>
-                            <TimelineContent  sx={{fontFamily: "Lato", color: "white"}}>✍🏼 Fill out Survey - (1.5 min) </TimelineContent>
-                        </TimelineItem>
-                        <TimelineItem>
-                            <TimelineSeparator>
-                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
-                                <TimelineConnector/>
-                            </TimelineSeparator>
-                            <TimelineContent  sx={{fontFamily: "Lato", color: "white"}}> 📍Pick Location - (30 seconds)</TimelineContent>
-                        </TimelineItem>
-                        <TimelineItem>
-                            <TimelineSeparator>
-                                <TimelineDot  sx={{backgroundColor: "#F18F01"}}/>
-                            </TimelineSeparator>
-                            <TimelineContent  sx={{fontFamily: "Lato", color: "white"}}>See Recommendations! 🚀</TimelineContent>
-                        </TimelineItem>
+                <Box id="guide-section" sx={{paddingTop: "6rem",  paddingBottom: "6rem", fontFamily: "Lato"}}>
+                    <Typography variant={"h4"} sx={{ textAlign: "center",  fontFamily: "Lato", color: "#F18F01", marginBottom: "1rem"}}>Quick Guide</Typography>
+                    <Typography variant={"body1"} sx={{ textAlign: "center",  fontFamily: "Lato", color: "#a3a3a3", }}>Follow the steps, and get your recommendations!</Typography>
 
-                    </Timeline>
+                    <Stepper
+                        initialStep={1}
+                        backButtonText="Previous"
+                        nextButtonText="Next"
+                    >
+                        <Step className={"text-carrot"}>
+                            <h2 className={"font-bold"}>Step 1 </h2>
+                            <Divider sx={{margin: "1rem"}}/>
+                            <h5 className={"font-bold"}>Register or Login through Google on the login page.</h5>
+                            <p className={"text-gray-500"}>To go to the register page you can click <a className={"text-blue-500 underline"} onClick={() => navigate("/register")}>here.</a></p>
+                        </Step>
+                        <Step className={"text-carrot"}>
+                            <h2  className={"font-bold"}>Step 2</h2>
+                            <Divider sx={{margin: "1rem"}}/>
+                            <section>You will be directed to the /survey page if you have not filled it out yet (if you have you can disregard this step). <section className={"font-bold"}>Fill out quick survey - I promise it takes 1.5 minutes max.</section>
+                            </section>
+
+                            <p className={"text-gray-500 text-center mt-4"}>Note that currently can only be filled out once.</p>
+                        </Step>
+                        <Step className={"text-carrot"}>
+                            <h2  className={"font-bold"}>Step 3</h2>
+                            <Divider sx={{margin: "1rem"}}/>
+                            <ul>
+                                <li>- Select a country from the world map, or the dropdown</li>
+                                <li>- Select a city on the dropdown</li>
+                            </ul>
+                            <h5 className={"font-bold"}></h5>
+                        </Step>
+                        <Step>
+                            <h2  className={"font-bold"}>Final Step</h2>
+                            <Divider sx={{margin: "1rem"}}/>
+                            <h5 className={"font-bold"}>You made it!</h5>
+                        </Step>
+                    </Stepper>
 
                 </Box>
             </Container>
             <Footer />
+                </>
+            )}
         </>
-
     );
 }
 
