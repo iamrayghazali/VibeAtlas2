@@ -19,6 +19,7 @@ function SelectLocation() {
     const [cityNames, setCityNames] = useState([]);
     const [loading, setLoading] = useState(false);
     const cityRef = useRef(null);
+    const [user_id, setUser_id] = useState(null);
 
     const countryNames = map.objects.world.geometries.map(geometry => geometry.properties.name);
     const countryIds = map.objects.world.geometries.map(geometry => geometry.id);
@@ -29,6 +30,21 @@ function SelectLocation() {
         }
     }, [currentCountryAbrv]);
 
+    useEffect(() => {
+        if (!user || !user.uid) return; // Wait for user to be ready
+
+        if (!user_id) {
+            fetchUserId().then(fetchedId => {
+                if (fetchedId) {
+                    setUser_id(fetchedId);
+                    checkIfSurveyIsFilled();
+                }
+            });
+        } else {
+            checkIfSurveyIsFilled();
+        }
+    }, [user, user_id]);
+
     //Scroll if country is selected
     useEffect(() => {
         if (cityRef.current) {
@@ -36,12 +52,30 @@ function SelectLocation() {
         }
     }, [currentCountryAbrv]);
 
+    async function checkIfSurveyIsFilled() {
+        try {
+            const userId = await fetchUserId();
+            console.log("fetching survey check w user:" , userId);
+            const response = await axios.get(`/api/user/survey/${userId}`)
+                .then(res => {
+                    if (res.data.filledOut) {
+                        console.log(res.data.filledOut, "survey filled out by user");
+                    } else {
+                        console.log(res.data.filledOut, "survey NOT  filled out by user");
+                        navigate("/survey");
+                    }
+                })
+                .catch(err => console.log(err));
+        } catch (e) {
+            console.error("Error fetching user:", e);
+        }
+    }
+
+    //TODO check if this works
     async function saveDataToHistory() {
-        const userId = await fetchUserId();
-        console.log(userId);
-        if (userId) {
+        if (user_id) {
             try {
-                await axios.post(`api/history/${userId}/searches`, {
+                await axios.post(`api/history/${user_d}/searches`, {
                     country: currentCountryName,
                     city: currentCity,
                 }).then(() => console.log("Saved to db: ", currentCountryName, currentCity));
@@ -60,10 +94,14 @@ function SelectLocation() {
     }
 
     const fetchUserId = async () => {
-        //TODO Check if this works, have to fix login and regiter first
         if (user && user.uid) {
             try {
                 const response = await axios.get(`http://127.0.0.1:7050/api/user/user-id/${user.uid}`);
+                if (response.status === 404) {
+                    console.log("user not found when fetching from db.", response);
+                    setUser_id(null);
+                }
+                setUser_id(response.data.id);
                 return response.data.id;
             } catch (error) {
                 console.error('Error fetching user id:', error);
@@ -107,7 +145,11 @@ function SelectLocation() {
         return country.id;
     }
 
+    if (!user) {
+        return <CircularProgress />
+    }
 
+    //TODO add loading loading ? () : ()
     return (
         <div>
             <Navbar></Navbar>
