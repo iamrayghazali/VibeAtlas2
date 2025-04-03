@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
 import {Tooltip} from "react-tooltip";
-import {ComposableMap, Geographies, Geography, ZoomableGroup} from "react-simple-maps";
+import {ComposableMap, Geographies, Geography} from "react-simple-maps";
 import {Autocomplete, Box, Button, CircularProgress, Divider, TextField, Typography} from "@mui/material";
 import map from "../assets/map-data.json";
 import axios from "axios";
@@ -19,9 +19,10 @@ function SelectLocation() {
     const [cityNames, setCityNames] = useState([]);
     const [loading, setLoading] = useState(false);
     const cityRef = useRef(null);
-    const countryNames = map.objects.world.geometries.map(geometry => geometry.properties.name);
 
-    // Trigger city fetch when currentCountryAbrv is updated
+    const countryNames = map.objects.world.geometries.map(geometry => geometry.properties.name);
+    const countryIds = map.objects.world.geometries.map(geometry => geometry.id);
+
     useEffect(() => {
         if (currentCountryAbrv) {
             getCityNames();
@@ -36,7 +37,8 @@ function SelectLocation() {
     }, [currentCountryAbrv]);
 
     async function saveDataToHistory() {
-        const userId = fetchUserId();
+        const userId = await fetchUserId();
+        console.log(userId);
         if (userId) {
             try {
                 await axios.post(`api/history/${userId}/searches`, {
@@ -77,10 +79,7 @@ function SelectLocation() {
             setLoading(true);
             try {
                 const response = await axios.get(`/api/survey/${currentCountryAbrv}/cities`);
-                console.log("API Response:", response);
-
                 if (response.data && response.data.cities && Array.isArray(response.data.cities)) {
-                    console.log("City names:", response.data.cities);
                     setCityNames(response.data.cities);
                 } else {
                     console.error("Unexpected data format:", response);
@@ -90,7 +89,7 @@ function SelectLocation() {
                 console.error("Error fetching city names:", error);
                 setCityNames([]);
             } finally {
-                setLoading(false); // Set loading to false once data is fetched or an error occurs
+                setLoading(false);
             }
         } else {
             console.log("Country not selected");
@@ -101,6 +100,11 @@ function SelectLocation() {
     function convertToTwoLetterCode(threeLetterCode) {
         const country = iso3166.whereAlpha3(threeLetterCode);
         return country ? country.alpha2 : null; // Returns the 2-letter country code
+    }
+
+    function findCountryIdByName(countryName) {
+        const country = map.objects.world.geometries.find(geometry => geometry.properties.name === countryName);
+        return country.id;
     }
 
 
@@ -141,9 +145,12 @@ function SelectLocation() {
                     }}
                     value={currentCountryName}
                     onChange={(event, newValue) => {
-                        const countryCode = convertToTwoLetterCode(newValue);
+                        console.log("setting setCurrentCountryName to " + newValue );
                         setCurrentCountryName(newValue);
+                        const countryCode = convertToTwoLetterCode(findCountryIdByName(newValue));
                         setCurrentCountryAbrv(countryCode);
+                        console.log("setting setCurrentCountryAbrv to " + countryCode );
+
                     }}
                     renderInput={(params) => <TextField {...params}
                                                         label={currentCountryName ? "Selected country" : "Select a Country"}
@@ -169,7 +176,7 @@ function SelectLocation() {
                                     const countryName = geo.properties.name;
                                     const countryCode = convertToTwoLetterCode(geo.id);
                                     setCurrentCountryName(countryName);
-                                    setCurrentCountryAbrv(countryCode); // Update country abbreviation
+                                    setCurrentCountryAbrv(countryCode);
                                 }}
                                 data-tooltip-content={geo.properties.name}
                                 data-tooltip-id="my-tooltip"
