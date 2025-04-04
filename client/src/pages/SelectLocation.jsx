@@ -52,16 +52,15 @@ function SelectLocation() {
         }
     }, [currentCountryAbrv]);
 
+    // is user has not filled out the survey, direct them to /survey
     async function checkIfSurveyIsFilled() {
         try {
             const userId = await fetchUserId();
-            console.log("fetching survey check w user:" , userId);
             const response = await axios.get(`/api/user/survey/${userId}`)
                 .then(res => {
                     if (res.data.filledOut) {
                         console.log(res.data.filledOut, "survey filled out by user");
                     } else {
-                        console.log(res.data.filledOut, "survey NOT  filled out by user");
                         navigate("/survey");
                     }
                 })
@@ -149,7 +148,6 @@ function SelectLocation() {
         return <CircularProgress />
     }
 
-    //TODO add loading loading ? () : ()
     return (
         <div>
             <Navbar></Navbar>
