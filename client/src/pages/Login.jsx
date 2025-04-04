@@ -42,7 +42,7 @@ function Login() {
         }
     }, [user]);
 
-
+    //TODO fix two login pages
     return (
         <Box
             sx={{
@@ -55,9 +55,9 @@ function Login() {
         >
             <Card
                 sx={{
-                    p: 5,
+                    padding: 5,
                     width: { xs: "90%", sm: "450px", md: "500px" },
-                    bgcolor: "rgba(255, 255, 255, 0.12)",
+                    backgroundColor: "rgba(255, 255, 255, 0.12)",
                     backdropFilter: "blur(15px)",
                     borderRadius: "20px",
                     boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.3)",

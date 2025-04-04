@@ -18,6 +18,7 @@ router.get('/:uid', async (req, res) => {
     }
 });
 
+//create new user
 router.post('/new', async (req, res) => {
     try {
         const { uid, email, name } = req.body;
@@ -35,21 +36,24 @@ router.post('/new', async (req, res) => {
     }
 });
 
-router.get('/survey/:uid', async (req, res) => {
+// Get boolean if survey is filled out by user
+router.get('/survey/:user_id', async (req, res) => {
     try {
-        const userId = req.params.uid;
+        const { user_id } = req.params;
+        console.log("Checking if survey is filled out for user:", user_id);
 
-        const surveyIsFilledOut = await SurveyResponse.findOne({ where: { user_id: userId } });
+        const surveyIsFilledOut = await SurveyResponse.findOne({
+            where: { user_id }
+        });
 
-        //return true or false
         return res.status(200).json({ filledOut: !!surveyIsFilledOut });
-
     } catch (e) {
         console.error("Error fetching user:", e);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
+//Get user user_id from db by uId
 router.get('/user-id/:uid', async (req, res) => {
     try {
         const user = await User.findOne({

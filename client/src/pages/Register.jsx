@@ -1,7 +1,7 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Card, Button, TextField, Typography, Box, Divider } from "@mui/material";
+import {Card, Button, TextField, Typography, Box, Divider, CircularProgress} from "@mui/material";
 import isEmail from "validator/es/lib/isEmail.js";
 import axios from "axios";
 
@@ -13,12 +13,22 @@ function Register() {
     const navigate = useNavigate();
     const [isValidEmail, setIsValidEmail] = useState(true);
     const { user } = useAuth();
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (user && user.uid) {
+            saveUserToDatabase(email, name).then(() => console.log("saveUserToDatabase ran in useffect"));
+            setLoading(false)
+        }
+    }, [user])
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
+            console.log('registering w firebase', email, name, password);
             await register(email, password);
-            await saveUserToDatabase(email, password, name);
+            //TODO navigate to survey if it has not been filled
             navigate("/");
         } catch (error) {
             console.error("Registration failed:", error.message);
@@ -42,6 +52,8 @@ function Register() {
             } catch (e) {
                 console.error("Error saving user", e);
             }
+        } else {
+            console.log("saved data tod bd failed: user.uid- ", user.uid)
         }
     };
 
@@ -52,6 +64,9 @@ function Register() {
     };
 
     //TODO fix auth
+    if (loading) {
+        return <CircularProgress />;
+    }
 
     return (
         <Box
