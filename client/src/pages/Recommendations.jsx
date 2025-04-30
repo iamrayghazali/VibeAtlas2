@@ -20,7 +20,11 @@ const Recommendations = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (location.state.country && location.state.city !== "") {
+        if (
+            location.state &&
+            location.state.country &&
+            location.state.city !== ""
+        ) {
             setCountry(location.state.country);
             setCity(location.state.city);
         } else {
