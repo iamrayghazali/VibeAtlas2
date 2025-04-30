@@ -74,7 +74,7 @@ function SelectLocation() {
     async function saveDataToHistory() {
         if (user_id) {
             try {
-                await axios.post(`api/history/${user_d}/searches`, {
+                await axios.post(`api/history/${user_id}/searches`, {
                     country: currentCountryName,
                     city: currentCity,
                 }).then(() => console.log("Saved to db: ", currentCountryName, currentCity));
