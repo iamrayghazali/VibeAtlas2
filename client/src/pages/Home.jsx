@@ -34,15 +34,9 @@ function Home() {
         }
     }, [user]);
 
-    const handleCountryChange = (event) => {
-        const selectedCountry = event.target.value;
-        setCurrentCountryAbrv(selectedCountry);
-    };
-
     useEffect(() => {
-        if (user && user.uid) {
             setLoading(false);
-        }
+
     }, [user])
 
     return (

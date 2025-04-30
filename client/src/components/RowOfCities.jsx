@@ -19,7 +19,7 @@ const RowOfCities = () => {
     const navigate = useNavigate(); // Declare navigate function
 
     return (
-        <Box sx={{ textAlign: "center", paddingBottom: "10rem", marginTop: "6rem" }}>
+        <Box sx={{ textAlign: "center", paddingBottom: "10rem", paddingTop: "6rem" }}>
             {/* Title with smooth whoosh effect */}
             <motion.div
                 className="title-container"
