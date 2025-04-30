@@ -8,6 +8,7 @@ import Recommendations from "./pages/Recommendations.jsx";
 import SelectLocation from "./pages/SelectLocation.jsx";
 import './index.css';
 
+//TODO: add about page
 const router = createBrowserRouter([
     {
         path: "/",

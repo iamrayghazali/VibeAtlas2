@@ -13,12 +13,13 @@ const RowOfNumbers = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 100, damping: 25 }}
         >
-            <Container>
+            <Container sx={{borderBottom: "1px solid white", marginBottom: "1rem"}}>
                     <Box
                         id="info-section"
                         sx={{
                             fontFamily: "Lato",
                             paddingTop: "6rem",
+                            paddingBottom: "6rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(3, 1fr)",
                             gap: "2rem",
@@ -40,12 +41,14 @@ const RowOfNumbers = () => {
                                 duration={1}
                                 className="count-up-text font-thin text-6xl text-carrot"
                             />
-                            <Divider sx={{ margin: "1rem", backgroundColor: "black" }} />
+                            <Divider sx={{ margin: "1rem", backgroundColor: "white" }} />
 
 
                             <Typography
                                 variant={"h4"}
                                 sx={{
+                                    color: "white",
+
                                     fontFamily: "Lato",
                                     fontWeight: "bold",
                                     margin: "1rem",
@@ -69,10 +72,12 @@ const RowOfNumbers = () => {
                                 duration={1}
                                 className="count-up-text font-thin text-6xl text-carrot"
                             />
-                            <Divider sx={{ margin: "1rem", backgroundColor: "black" }} />
+                            <Divider sx={{ margin: "1rem", backgroundColor: "white" }} />
                             <Typography
                                 variant={"h4"}
                                 sx={{
+                                    color: "white",
+
                                     fontFamily: "Lato",
                                     fontWeight: "bold",
                                     margin: "1rem",
@@ -95,10 +100,11 @@ const RowOfNumbers = () => {
                                 duration={1}
                                 className="count-up-text font-thin text-6xl text-carrot"
                             />
-                            <Divider sx={{ margin: "1rem", backgroundColor: "black" }} />
+                            <Divider sx={{ margin: "1rem", backgroundColor: "white" }} />
                             <Typography
                                 variant={"h4"}
                                 sx={{
+                                    color: "white",
                                     fontFamily: "Lato",
                                     fontWeight: "bold",
                                     margin: "1rem",

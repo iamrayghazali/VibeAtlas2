@@ -89,6 +89,8 @@ const Survey = () => {
     };
 
     //TODO: route user if survey has been filled out
+    //TODO: update layout and css
+
     return (
         <>
             <Navbar></Navbar>
