@@ -15,7 +15,7 @@ const data = [
     { city: "Rome", country: "Italy", img: rome }
 ];
 
-const RowOfCities = () => {
+const RowOfCities = (user) => {
     const navigate = useNavigate(); // Declare navigate function
 
     return (
@@ -52,7 +52,14 @@ const RowOfCities = () => {
                 alignItems: "center",
             }}>
                 {data.map((item, index) => (
-                    <Box key={index} sx={{cursor: "pointer"}} onClick={() => navigate("/recommendations", { state: { country: item.country, city: item.city } })}>
+                    <Box key={index} sx={{cursor: "pointer"}} onClick={() => {
+                        user.user ? navigate("/recommendations", {
+                            state: {
+                                country: item.country,
+                                city: item.city
+                            }
+                        }) : navigate("/login")
+                    }}>
                         <TiltedCard
                             key={index}
                             imageSrc={item.img}
