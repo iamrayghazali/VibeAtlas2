@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     AppBar,
     Toolbar,
@@ -18,6 +18,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import logo from "../assets/logo.png"; // Make sure the path is correct
 import ShinyText from './ShinyText';
+import CircularText from "./CircularText.jsx";
 
 const Navbar = () => {
     const navigate = useNavigate();
