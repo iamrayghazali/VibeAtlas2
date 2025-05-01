@@ -159,7 +159,9 @@ function Home() {
                                     text="VIBE*ATLAS*VIBE*ATLAS*"
                                     onHover="speedUp"
                                     spinDuration={20}
-                                    className="custom-class mt-10 md:mt-30 text-carrot"
+                                    textColor="text-carrot"
+                                    size="200"
+                                    className="custom-class mt-10 md:mt-30 text-2xl"
                                 />
                                 <Box sx={{
                                     display: "grid",
