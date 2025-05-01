@@ -56,7 +56,7 @@ const Survey = () => {
                 return newAnswers;
             } else {
                 // Otherwise, add the new option
-                return [...newAnswers, { question_id: questionId, option_id: optionId }];
+                return [...newAnswers, {question_id: questionId, option_id: optionId}];
             }
         });
 
@@ -95,20 +95,22 @@ const Survey = () => {
         <>
             <Navbar></Navbar>
             <Container sx={{
-                width: "100%",
-                padding: "0px",
+                minWidth: "100%",
+                margin: "0px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100vh"
+                height: "100vh",
+                backgroundColor: "black",
+                fontFamily: "Lato"
             }}>
                 <Card
                     sx={{
-                        width: "70%",
+                        maxWidth: "90%",
                         padding: "2rem",
                         boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
                         backdropFilter: "blur(10px)",
-                        backgroundColor: "rgba(0, 0, 0, 0.6)",
+                        backgroundColor: "#F0EAD6",
                         borderRadius: "12px",
                         color: "#fff",
                         display: "flex",
@@ -119,7 +121,16 @@ const Survey = () => {
                     <LinearProgress
                         variant="determinate"
                         value={(currentIndex) / questions.length * 100}
-                        sx={{minWidth: "100%", height: "12px", marginBottom: "1rem", borderRadius: "12px"}}
+                        sx={{
+                            minWidth: "100%",
+                            height: "8px",
+                            marginBottom: "2rem",
+                            borderRadius: "12px",
+                            backgroundColor: "#ccc", // background of the track
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: '#F18F01', // color of the filled bar
+                            },
+                        }}
                     />
 
                     {questions.length > 0 && (
@@ -130,7 +141,14 @@ const Survey = () => {
                             exit={{opacity: 0, y: -10}}
                         >
                             <Typography variant="h6"
-                                        sx={{fontWeight: "bold", marginBottom: "1rem", fontSize: "1.25rem"}}>
+                                        sx={{
+                                            fontWeight: "bold",
+                                            marginBottom: "4rem",
+                                            fontSize: "1.25rem",
+                                            textAlign: "center",
+                                            fontFamily: "Lato",
+                                            color: "black"
+                                        }}>
                                 {questions[currentIndex].question_text}
                             </Typography>
 
@@ -142,12 +160,12 @@ const Survey = () => {
                                             display: "flex",
                                             alignItems: "center",
                                             padding: "0.5rem",
-                                            backgroundColor: selectedOptions.has(option.id) ? "#2196f3" : "#333",
+                                            backgroundColor: selectedOptions.has(option.id) ? "#b06a02" : "#333",
                                             borderRadius: "8px",
                                             cursor: "pointer",
                                             transition: "background-color 0.3s ease",
                                             "&:hover": {
-                                                backgroundColor: "#1976d2",
+                                                backgroundColor: "#b06a02",
                                             },
                                         }}
                                         onClick={() => handleOptionChange(option.id)}
@@ -156,11 +174,36 @@ const Survey = () => {
                                             checked={selectedOptions.has(option.id)}
                                             onChange={() => handleOptionChange(option.id)}
                                             value={option.id}
-                                            sx={{
-                                                color: selectedOptions.has(option.id) ? "#fff" : "#aaa",
-                                            }}
+                                            icon={<Box
+                                                sx={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    border: '2px solid #b06a02',
+                                                    borderRadius: '4px',
+                                                }}
+                                            />}
+                                            checkedIcon={<Box
+                                                sx={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    backgroundColor: '#b06a02',
+                                                    borderRadius: '4px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: '#fff',
+                                                    fontSize: 16,
+                                                }}
+                                            >
+                                                ✓
+                                            </Box>}
                                         />
-                                        <Typography sx={{color: "#fff", fontWeight: "500", fontSize: "1rem"}}>
+                                        <Typography sx={{
+                                            color: "#fff",
+                                            fontWeight: "500",
+                                            fontSize: "1rem",
+                                            fontFamily: "Lato"
+                                        }}>
                                             {option.option_text}
                                         </Typography>
                                     </Box>
@@ -176,13 +219,14 @@ const Survey = () => {
                                 <Button
                                     variant="contained"
                                     onClick={currentIndex === questions.length - 1 ? handleSubmit : handleNext}
-                                    disabled={selectedOptions.size === 0} // Disable the button if no option is selected
+                                    disabled={!questions[currentIndex]?.options.some(option => selectedOptions.has(option.id))
+                                    } // Disable the button if no option is selected
                                     sx={{
                                         padding: "10px 20px",
-                                        backgroundColor: "#2196f3",
+                                        backgroundColor: "#F18F01",
                                         color: "white",
                                         "&:hover": {
-                                            backgroundColor: "#1976d2",
+                                            backgroundColor: "#b06a02",
                                         },
                                         borderRadius: "10px",
                                         fontWeight: "bold",
