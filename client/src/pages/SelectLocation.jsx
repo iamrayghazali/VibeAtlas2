@@ -15,9 +15,10 @@ function SelectLocation() {
     const [currentCountryName, setCurrentCountryName] = useState("");
     const [currentCity, setCurrentCity] = useState("");
     const [currentHighlight, setCurrentHighlight] = useState("");
-    const { user } = useAuth();
+    const {user} = useAuth();
     const [cityNames, setCityNames] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [loadingCities, setLoadingCities] = useState(false);
     const cityRef = useRef(null);
     const [user_id, setUser_id] = useState(null);
 
@@ -31,18 +32,34 @@ function SelectLocation() {
     }, [currentCountryAbrv]);
 
     useEffect(() => {
-        if (!user || !user.uid) return; // Wait for user to be ready
+        let fallbackTimeout;
 
-        if (!user_id) {
-            fetchUserId().then(fetchedId => {
-                if (fetchedId) {
-                    setUser_id(fetchedId);
-                    checkIfSurveyIsFilled();
-                }
-            });
+        if (user && user.uid) {
+            setLoading(false); // user is ready
+            if (!user_id) {
+                setLoading(true);
+                fetchUserId().then(fetchedId => {
+                    if (fetchedId) {
+                        setUser_id(fetchedId);
+                        checkIfSurveyIsFilled();
+                    }
+                });
+            } else {
+                checkIfSurveyIsFilled();
+            }
         } else {
-            checkIfSurveyIsFilled();
+            setLoading(true);
+            // Set a timeout to fallback if user is not set within 5 sec
+            fallbackTimeout = setTimeout(() => {
+                if (!user || !user.uid) {
+                    console.log("User not logged in after timeout. Redirecting...");
+                    navigate("/login"); // or show a message
+                }
+            }, 2000);
         }
+
+        // Clear timeout if component unmounts or user logs in
+        return () => clearTimeout(fallbackTimeout);
     }, [user, user_id]);
 
     //Scroll if country is selected
@@ -56,10 +73,11 @@ function SelectLocation() {
     async function checkIfSurveyIsFilled() {
         try {
             const userId = await fetchUserId();
-            const response = await axios.get(`/api/user/survey/${userId}`)
+            await axios.get(`/api/user/survey/${userId}`)
                 .then(res => {
                     if (res.data.filledOut) {
                         console.log(res.data.filledOut, "survey filled out by user");
+                        setLoading(false);
                     } else {
                         navigate("/survey");
                     }
@@ -113,7 +131,7 @@ function SelectLocation() {
     async function getCityNames() {
         if (currentCountryAbrv) {
             console.log("Fetching data for:", currentCountryAbrv);
-            setLoading(true);
+            setLoadingCities(true);
             try {
                 const response = await axios.get(`/api/survey/${currentCountryAbrv}/cities`);
                 if (response.data && response.data.cities && Array.isArray(response.data.cities)) {
@@ -126,7 +144,7 @@ function SelectLocation() {
                 console.error("Error fetching city names:", error);
                 setCityNames([]);
             } finally {
-                setLoading(false);
+                setLoadingCities(false);
             }
         } else {
             console.log("Country not selected");
@@ -144,157 +162,163 @@ function SelectLocation() {
         return country.id;
     }
 
-    if (!user) {
-        return <CircularProgress />
-    }
-
     return (
-        <div>
-            <Navbar></Navbar>
-            <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
-                <Typography variant={"h2"} sx={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    fontFamily: "Lato",
-                    color: "#F18F01",
-                    marginTop: {xs: "1rem", md: "3rem"},
-                    fontSize: {xs: "2rem", md: "4rem"},
-                    padding: "1rem"
-                }}>Where are you vibin' today?</Typography>
-                <Typography variant={"body1"} sx={{
-                    textAlign: "center",
-                    fontWeight: "thin",
-                    fontFamily: "Lato",
-                    color: "black",
-                    fontSize: {xs: "0.8rem", md: "1.5rem"},
-                    marginBottom: "3rem"
-                }}>Select a country from the map or the dropdown.</Typography>
-
-                <Autocomplete
-                    disablePortal
-                    options={countryNames}
-                    sx={{
-                        width: 300, padding: "1rem", borderColor: "#F18F01",
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                            {
-                                borderColor: "black",
-                            },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                            color: "#F18F01", // Color of the label when focused
-                        },
-                    }}
-                    value={currentCountryName}
-                    onChange={(event, newValue) => {
-                        console.log("setting setCurrentCountryName to " + newValue );
-                        setCurrentCountryName(newValue);
-                        const countryCode = convertToTwoLetterCode(findCountryIdByName(newValue));
-                        setCurrentCountryAbrv(countryCode);
-                        console.log("setting setCurrentCountryAbrv to " + countryCode );
-
-                    }}
-                    renderInput={(params) => <TextField {...params}
-                                                        label={currentCountryName ? "Selected country" : "Select a Country"}
-                                                        variant="outlined"/>}
-                />
-            </Box>
-            <Tooltip id="my-tooltip"/>
-            <ComposableMap data-tip="">
-                <Geographies geography="/src/assets/map-data.json">
-                    {({geographies}) =>
-                        geographies.map((geo) => (
-                            <Geography
-                                key={geo.rsmKey}
-                                geography={geo}
-                                onMouseEnter={() => {
-                                    const {name} = geo.properties;
-                                    setCurrentHighlight(`${name}`);
-                                }}
-                                onMouseLeave={() => {
-                                    setCurrentHighlight("");
-                                }}
-                                onClick={() => {
-                                    const countryName = geo.properties.name;
-                                    const countryCode = convertToTwoLetterCode(geo.id);
-                                    setCurrentCountryName(countryName);
-                                    setCurrentCountryAbrv(countryCode);
-                                }}
-                                data-tooltip-content={geo.properties.name}
-                                data-tooltip-id="my-tooltip"
-                                className="hover:fill-brown transition-transform duration-200 ease-in-out"
-                            />
-                        ))
-                    }
-                </Geographies>
-            </ComposableMap>
-
-            {currentCountryAbrv ? (
-                <>
-                    <Box ref={cityRef} sx={{
-                        minHeight: "80vh",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column"
-                    }}>
-
-                        <Divider sx={{width: "80%"}}></Divider>
-                        <Typography variant={"h5"} sx={{
+        <>
+            {loading ? (
+                <Box sx={{position: 'absolute', top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: -1}}>
+                    <CircularProgress/>
+                </Box>
+            ) : (
+                <div>
+                    <Navbar></Navbar>
+                    <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                        <Typography variant={"h2"} sx={{
                             textAlign: "center",
                             fontWeight: "bold",
                             fontFamily: "Lato",
                             color: "#F18F01",
-                            marginBottom: "2rem",
-                            margin: {xs: "", md: "3rem"}
-                        }}>Nice! Now select the city.</Typography>
-                        {loading ? ( // Show loading indicator while fetching cities
-                            <CircularProgress size="4rem" sx={{color: "#F18F01"}}/>
-                        ) : (
-                            <>
-                                <Autocomplete
-                                    disablePortal
-                                    options={cityNames}
-                                    sx={{
-                                        width: 300, padding: "1rem", borderColor: "#F18F01",
-                                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                            {
-                                                borderColor: "black",
-                                            },
-                                        "& .MuiInputLabel-root.Mui-focused": {
-                                            color: "#F18F01", // Color of the label when focused
-                                        },
-                                    }}
-                                    value={currentCity}
-                                    onChange={(event, newValue) => setCurrentCity(newValue)}
-                                    renderInput={(params) => <TextField {...params} label="City" variant="outlined"/>}
-                                    getOptionLabel={(option) => option} // Ensure this is using a unique property of the city
-                                    renderOption={(props, option, state) => (
-                                        <li {...props} key={option + state.index}>{option}</li>  // Ensure the key is unique
-                                    )}
-                                />
-                                <Button sx={{textTransform: "none", color: "black"}}
-                                        href="mailto:support@example.com?subject=I%20can't%20see%20a%20city"
-                                        target="_blank">
-                                    Can't see a city?
-                                </Button>
-                            </>
-                        )}
-                        {currentCity ? (
-                            <>
-                                <Button sx={{
-                                    textTransform: "none",
-                                    backgroundColor: "#F18F01",
-                                    color: "black",
-                                    marginTop: "2rem"
-                                }} variant={"contained"} onClick={() => saveDataToHistory()}>
-                                    Generate Recommendations and Events
-                                </Button>
-                            </>
-                        ) : null}
-                    </Box>
+                            marginTop: {xs: "1rem", md: "3rem"},
+                            fontSize: {xs: "2rem", md: "4rem"},
+                            padding: "1rem"
+                        }}>Where are you vibin' today?</Typography>
+                        <Typography variant={"body1"} sx={{
+                            textAlign: "center",
+                            fontWeight: "thin",
+                            fontFamily: "Lato",
+                            color: "black",
+                            fontSize: {xs: "0.8rem", md: "1.5rem"},
+                            marginBottom: "3rem"
+                        }}>Select a country from the map or the dropdown.</Typography>
 
-                </>
-            ) : null}
-        </div>
+                        <Autocomplete
+                            disablePortal
+                            options={countryNames}
+                            sx={{
+                                width: 300, padding: "1rem", borderColor: "#F18F01",
+                                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                        borderColor: "black",
+                                    },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#F18F01", // Color of the label when focused
+                                },
+                            }}
+                            value={currentCountryName}
+                            onChange={(event, newValue) => {
+                                console.log("setting setCurrentCountryName to " + newValue);
+                                setCurrentCountryName(newValue);
+                                const countryCode = convertToTwoLetterCode(findCountryIdByName(newValue));
+                                setCurrentCountryAbrv(countryCode);
+                                console.log("setting setCurrentCountryAbrv to " + countryCode);
+
+                            }}
+                            renderInput={(params) => <TextField {...params}
+                                                                label={currentCountryName ? "Selected country" : "Select a Country"}
+                                                                variant="outlined"/>}
+                        />
+                    </Box>
+                    <Tooltip id="my-tooltip"/>
+                    <ComposableMap data-tip="">
+                        <Geographies geography="/src/assets/map-data.json">
+                            {({geographies}) =>
+                                geographies.map((geo) => (
+                                    <Geography
+                                        key={geo.rsmKey}
+                                        geography={geo}
+                                        onMouseEnter={() => {
+                                            const {name} = geo.properties;
+                                            setCurrentHighlight(`${name}`);
+                                        }}
+                                        onMouseLeave={() => {
+                                            setCurrentHighlight("");
+                                        }}
+                                        onClick={() => {
+                                            const countryName = geo.properties.name;
+                                            const countryCode = convertToTwoLetterCode(geo.id);
+                                            setCurrentCountryName(countryName);
+                                            setCurrentCountryAbrv(countryCode);
+                                        }}
+                                        data-tooltip-content={geo.properties.name}
+                                        data-tooltip-id="my-tooltip"
+                                        className="hover:fill-brown transition-transform duration-200 ease-in-out"
+                                    />
+                                ))
+                            }
+                        </Geographies>
+                    </ComposableMap>
+
+                    {currentCountryAbrv ? (
+                        <>
+                            <Box ref={cityRef} sx={{
+                                minHeight: "80vh",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexDirection: "column"
+                            }}>
+
+                                <Divider sx={{width: "80%"}}></Divider>
+                                <Typography variant={"h5"} sx={{
+                                    textAlign: "center",
+                                    fontWeight: "bold",
+                                    fontFamily: "Lato",
+                                    color: "#F18F01",
+                                    marginBottom: "2rem",
+                                    margin: {xs: "", md: "3rem"}
+                                }}>Nice! Now select the city.</Typography>
+                                {loadingCities ? ( // Show loading indicator while fetching cities
+                                    <CircularProgress size="4rem" sx={{color: "#F18F01"}}/>
+                                ) : (
+                                    <>
+                                        <Autocomplete
+                                            disablePortal
+                                            options={cityNames}
+                                            sx={{
+                                                width: 300, padding: "1rem", borderColor: "#F18F01",
+                                                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                    {
+                                                        borderColor: "black",
+                                                    },
+                                                "& .MuiInputLabel-root.Mui-focused": {
+                                                    color: "#F18F01", // Color of the label when focused
+                                                },
+                                            }}
+                                            value={currentCity}
+                                            onChange={(event, newValue) => setCurrentCity(newValue)}
+                                            renderInput={(params) => <TextField {...params} label="City"
+                                                                                variant="outlined"/>}
+                                            getOptionLabel={(option) => option} // Ensure this is using a unique property of the city
+                                            renderOption={(props, option, state) => (
+                                                <li {...props} key={option + state.index}>{option}</li>  // Ensure the key is unique
+                                            )}
+                                        />
+                                        <Button sx={{textTransform: "none", color: "grey", fontStyle: "italic"}}
+                                                href="mailto:support@example.com?subject=I%20can't%20see%20a%20city"
+                                                target="_blank">
+                                            Can't see a city?
+                                        </Button>
+                                    </>
+                                )}
+                                {currentCity ? (
+                                    <>
+                                        <Button sx={{
+                                            textTransform: "none",
+                                            backgroundColor: "#F18F01",
+                                            color: "black",
+                                            marginTop: "2rem"
+                                        }} variant={"contained"} onClick={() => saveDataToHistory()}>
+                                            Generate Recommendations and Events
+                                        </Button>
+                                    </>
+                                ) : null}
+                            </Box>
+
+                        </>
+                    ) : null}
+                </div>
+            )}
+        </>
+
     );
 }
 
