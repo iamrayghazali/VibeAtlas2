@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
 import axios from "axios";
 import {Button, Typography, Container, Box, Grid, Divider, CircularProgress} from "@mui/material";
@@ -19,6 +19,7 @@ function Home() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const {user} = useAuth();
+    const location = useLocation();
     const [surveyIsFilled, setSurveyIsFilled] = useState(null);
 
     useEffect(() => {
@@ -38,6 +39,18 @@ function Home() {
             setLoading(false);
 
     }, [user])
+
+    useEffect(() => {
+        if (location.state?.scrollToGuide) {
+            const timeout = setTimeout(() => {
+                document.getElementById("guide-section")?.scrollIntoView({ behavior: "smooth" });
+                // clean up state so it doesn't scroll again if you refresh
+                navigate(location.pathname, { replace: true, state: {} });
+            }, 100); // short delay to ensure DOM is ready
+
+            return () => clearTimeout(timeout);
+        }
+    }, [location, navigate]);
 
     return (
         <>

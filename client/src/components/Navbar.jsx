@@ -14,7 +14,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { motion } from "framer-motion";
 import { getAuth, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import logo from "../assets/logo.png"; // Make sure the path is correct
 import ShinyText from './ShinyText';
@@ -23,6 +23,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [open, setOpen] = useState(false);
+    const location = useLocation();
 
     const handleSignOut = async () => {
         const auth = getAuth();
@@ -48,12 +49,17 @@ const Navbar = () => {
                 <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
                     <Button variant={"contained"}  sx={{backgroundColor: "black", color: "white"}}  color="text" onClick={() => navigate("/location")}>Select location</Button>
 
-                    <Button  sx={{textTransform: "none"}}  color="text" onClick={() => navigate("/about")}>About</Button>
+                    <Button  sx={{textTransform: "none"}}  color="text" onClick={() => window.open("https://www.raydandev.com", "_blank")}>About me</Button>
                     <Button
                         sx={{ textTransform: "none" }}
                         color="text"
-                        onClick={() => document.getElementById("guide-section").scrollIntoView({ behavior: "smooth" })}
-                    >
+                        onClick={() => {
+                            if (location.pathname === "/") {
+                                document.getElementById("guide-section")?.scrollIntoView({ behavior: "smooth" });
+                            } else {
+                                navigate("/", { state: { scrollToGuide: true } });
+                            }
+                        }}>
                         Guide
                     </Button>
                 </Box>
@@ -90,8 +96,8 @@ const Navbar = () => {
                         </ListItem>
                         <Divider />
 
-                        <ListItem button onClick={() => navigate("/about")}>
-                            <ListItemText primary="About" />
+                        <ListItem button onClick={() => window.open("https://www.raydandev.com", "_blank")}>
+                            <ListItemText primary="About me" />
                         </ListItem>
                         <Divider />
 
