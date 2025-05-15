@@ -7,6 +7,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import CircularText from "../components/CircularText.jsx";
 import bgImage from "../assets/auth-bg.jpg";
+import LoadingPage from "./LoadingPage.jsx";
 
 function Register() {
     const { register } = useAuth();
@@ -68,7 +69,7 @@ function Register() {
 
     //TODO fix auth
     if (loading) {
-        return <CircularProgress />;
+        return <LoadingPage />;
     }
 
     return (

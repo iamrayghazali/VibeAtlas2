@@ -8,6 +8,7 @@ import map from "../assets/map-data.json";
 import axios from "axios";
 import * as iso3166 from "iso-3166-1";
 import Navbar from "../components/Navbar.jsx";
+import LoadingPage from "../pages/LoadingPage.jsx";
 
 function SelectLocation() {
     const navigate = useNavigate();
@@ -151,6 +152,12 @@ function SelectLocation() {
         }
     }
 
+    //TODO: Add map of country selected and mark evenets and reccommanedations to tha map of the country.
+    //TODO: Guide completetion and back button
+    //TODO: fix event reccommendation UI
+    //TODO: scrololed when reccomendations load
+    //TODO: TESTS
+
     // Convert 3-letter country code to 2-letter country code
     function convertToTwoLetterCode(threeLetterCode) {
         const country = iso3166.whereAlpha3(threeLetterCode);
@@ -165,9 +172,7 @@ function SelectLocation() {
     return (
         <>
             {loading ? (
-                <Box sx={{position: 'absolute', top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: -1}}>
-                    <CircularProgress size="4rem" sx={{color: "#F18F01"}}/>
-                </Box>
+                <LoadingPage></LoadingPage>
             ) : (
                 <div>
                     <Navbar></Navbar>

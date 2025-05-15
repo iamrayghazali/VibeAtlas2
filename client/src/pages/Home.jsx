@@ -12,6 +12,9 @@ import RowOfCities from "../components/RowOfCities.jsx";
 import RowOfNumbers from "../components/RowOfNumbers.jsx";
 import Footer from "../components/Footer.jsx";
 import Stepper, {Step} from '../components/Stepper.jsx';
+import LoadingPage from "./LoadingPage.jsx";
+import {onAuthStateChanged} from "firebase/auth";
+import {auth} from "../firebaseConfig.js";
 
 
 function Home() {
@@ -36,9 +39,11 @@ function Home() {
     }, [user]);
 
     useEffect(() => {
+        const stopAuthCheck = onAuthStateChanged(auth, () => {
             setLoading(false);
-
-    }, [user])
+        });
+        return () => stopAuthCheck();
+    }, []);
 
     useEffect(() => {
         if (location.state?.scrollToGuide) {
@@ -46,20 +51,19 @@ function Home() {
                 document.getElementById("guide-section")?.scrollIntoView({ behavior: "smooth" });
                 // clean up state so it doesn't scroll again if you refresh
                 navigate(location.pathname, { replace: true, state: {} });
-            }, 100); // short delay to ensure DOM is ready
+            }, 100); //delay
 
             return () => clearTimeout(timeout);
         }
     }, [location, navigate]);
+
 
     return (
         <>
             {loading ?
                 (
                     <>
-                        <Box sx={{position: "absolute", top: "45%", left: "45%", maxHeight: "100vh"}}>
-                            <CircularProgress size={"3rem"} color={"inherit"}/>
-                        </Box>
+                        <LoadingPage/>
                     </>
                 )
                 : (
@@ -216,7 +220,7 @@ function Home() {
                             </Box>
                         </Container>
                         <Container sx={{fontFamily: "Lato", backgroundColor: "white", minWidth: "100%"}}>
-                            <RowOfCities/>
+                            <RowOfCities user={!!user} />
                         </Container>
                         <Container ref={guideRef} sx={{fontFamily: "Lato", backgroundColor: "black", minWidth: "100%"}}>
                             <Box id="guide-section"

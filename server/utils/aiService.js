@@ -9,7 +9,7 @@ if (!apiKey) {
 const genAI = new GoogleGenerativeAI(apiKey);
 
 function structureUserPreferences() {
-    //TODO
+    //aTODO
 }
 
 async function getTravelRecommendations(userPreferences, city, country) {
