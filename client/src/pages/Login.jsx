@@ -63,7 +63,7 @@ function Login() {
             <CircularText
                 text="VIBE*ATLAS*VIBE*ATLAS*"
                 onHover="speedUp"
-                size="200"
+                size="300"
                 textColor="text-black"
                 spinDuration={20}
                 className="custom-class font-Lato text-2xl mb-10 text-black"
