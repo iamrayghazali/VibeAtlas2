@@ -9,7 +9,7 @@ import CircularText from "../components/CircularText.jsx";
 import GoogleIcon from '@mui/icons-material/Google';
 
 function Login() {
-    const { login, googleLogin, currentUser } = useAuth();  // currentUser should be coming from AuthContext
+    const { login, googleLogin, currentUser } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -111,7 +111,7 @@ function Login() {
                             },
                             "& label.Mui-focused": {
                                 fontWeight: "bold",
-                                color: "#F0EAD6", // color when floating
+                                color: "#F0EAD6",
                             },
                         }}
                     />
@@ -136,7 +136,7 @@ function Login() {
                             },
                             "& label.Mui-focused": {
                                 fontWeight: "bold",
-                                color: "#F0EAD6", // color when floating
+                                color: "#F0EAD6",
                             },
                         }}
                     />

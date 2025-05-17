@@ -2,10 +2,17 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {useAuth} from "../context/AuthContext.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Box, CircularProgress, Typography, Paper, Button, Divider, Skeleton} from "@mui/material";
-import {motion} from "framer-motion";
+import {
+    Box,
+    Typography,
+
+    FormControlLabel, Switch
+} from "@mui/material";
 import SearchHistory from "../components/SearchHistory.jsx";
 import Navbar from "../components/Navbar.jsx";
+import SimpleCountryMap from "../components/SimpleCountryMap.jsx";
+import map from "../assets/map-data.json";
+
 
 const Recommendations = () => {
     const [recommendations, setRecommendations] = useState([]);
@@ -38,12 +45,13 @@ const Recommendations = () => {
         }
         if (user && city && country) {
             console.log("Searching for: ", country, city);
+
             // Fetch recommendations when user, city, and country are available
             getAIRecommendations().then(() => {
-                console.log("Ai recommendations ran")
+                console.log("Ai recommendations ran.")
             })
             getEventRecommendations(city).then(() => {
-                console.log("Event recommendations ran")
+                console.log("Event recommendations ran.")
             })
         }
     }, [user, city, country]);
@@ -73,7 +81,7 @@ const Recommendations = () => {
 
     const getEventRecommendations = async (city) => {
         try {
-            axios.get(`http://127.0.0.1:7050/api/recommendations/events?location=${city}`)
+            axios.get("http://127.0.0.1:7050/api/recommendations/events?location=${city}")
                 .then((response) => {
                     setEventRecommendations(createEventRecommendationStructure(response.data));
                 })
@@ -112,6 +120,42 @@ const Recommendations = () => {
         <>
             <Navbar></Navbar>
             <Box sx={{
+                width: "100%",
+                minHeight: "20vh",
+                display: "flex",
+                flexDirection: "column",
+                backgroundColor: "black",
+                fontFamily: "Lato"
+            }} >
+                <Typography variant={"h5"} align={"left"} sx={{color: "white", marginLeft: "3rem", marginTop: "3rem", marginBottom: "2rem", fontFamily: "Lato"}}>Search History</Typography>
+                <SearchHistory></SearchHistory>
+            </Box>
+            <Box sx={{
+                width: '100%',
+                padding: '2rem',
+                backgroundColor: 'black',
+                minHeight: '100vh',
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gap: "16px",
+                justifyItems: "center",
+                "@media (min-width: 1024px)": {
+                    gridTemplateColumns: "1fr 2fr",
+                }
+            }}>
+                {
+                    country ? (
+                         <SimpleCountryMap countryName={country} ></SimpleCountryMap>
+                    ) :  <Typography variant={"h5"} align={"center"} sx={{color: "white", fontFamily: "Lato"}}>Map unavailable</Typography>
+
+                }
+                <Box sx={{width: "100%", padding: "2rem", backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                    <Box sx={{}}>
+                        <Switch onClick={() => selectedTab ? "AI" : "Event"}  />
+                    </Box>
+                </Box>
+            </Box>
+            {/*<Box sx={{
                 width: '100%',
                 padding: '2rem',
                 backgroundColor: '#121212',
@@ -139,22 +183,10 @@ const Recommendations = () => {
                     <Box sx={{display: 'flex', justifyContent: 'center', marginBottom: '1.5rem'}}>
                         <Button
                             onClick={() => setSelectedTab("AI")}
-                            sx={{
-                                textDecoration: selectedTab === "AI" ? "underline" : "none",
-                                color: "#fff",
-                                fontWeight: 600,
-                                margin: "0 1rem"
-                            }}>
                             AI Recommendations
                         </Button>
                         <Button
                             onClick={() => setSelectedTab("Event")}
-                            sx={{
-                                textDecoration: selectedTab === "Event" ? "underline" : "none",
-                                color: "#fff",
-                                fontWeight: 600,
-                                margin: "0 1rem"
-                            }}>
                             Event Recommendations
                         </Button>
                     </Box>
@@ -182,6 +214,7 @@ const Recommendations = () => {
                                                         marginBottom: "1rem",
                                                         color: '#fff'
                                                     }} elevation={3}>
+                                                        <Chip label="Historical" color="primary" size="small"/>
                                                         <Typography variant="body1"
                                                                     sx={{color: '#aaa', marginBottom: '0.5rem'}}>
                                                             {place.location}
@@ -291,7 +324,8 @@ const Recommendations = () => {
                         </>
                     )}
                 </Paper>
-            </Box>
+            </Box>*/}
+
         </>
 
     );

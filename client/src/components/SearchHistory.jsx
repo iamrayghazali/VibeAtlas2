@@ -85,36 +85,71 @@ const SearchHistory = () => {
 
 
     return (
+        <Box
+            sx={{
+                position: "relative",
+                width: "90%",
+                mx: "auto",
+                overflow: "hidden",
+            }}
+        >
         <Box ref={scrollRef}
-                onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
+             onMouseEnter={() => setIsHovered(true)}
+             onMouseLeave={() => setIsHovered(false)}
              sx={{
                  overflowX: "auto",
                  whiteSpace: "nowrap",
                  scrollbarWidth: "none",
-                 '&::-webkit-scrollbar': { display: 'none' },
+                 '&::-webkit-scrollbar': {display: 'none'},
                  maxWidth: '100%',
                  width: '100%',
+                 '&::before, &::after': {
+                     content: '""',
+                     position: 'absolute',
+                     top: 0,
+                     bottom: 0,
+                     width: '50px',
+                     zIndex: 1,
+                     pointerEvents: 'none',
+                 },
+                 '&::before': {
+                     left: 0,
+                     background: 'linear-gradient(to right, black, transparent)',
+                 },
+                 '&::after': {
+                     right: 0,
+                     background: 'linear-gradient(to left, black, transparent)',
+                 },
              }}
-            >
+        >
             {userHistory ? (
                 <>
-                    <Stack  direction="row" sx={{ overflowX: "visible"}} spacing={{xs: 1, sm: 2, md: 4}} divider={<Divider variant={"middle"} orientation="vertical" sx={{backgroundColor: "white"}} flexItem/>}>
-                    {userHistory.map((history, index) => (
-                        <Box key={index} sx={{cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",  minWidth: 'max-content'}} onClick={() => {
-                            navigate("/recommendations", {state: {country: history.country, city: history.city}})
-                        }}>
-                            <Typography variant="h6" sx={{fontWeight: "200", color: "white"}}
-                                        >{history.city}</Typography>
-                            <Typography variant="body1" sx={{fontWeight: "600", color: "grey"}}
-                                        component="p">{history.country}</Typography>
-                        </Box>
-                    ))}
+                    <Stack direction="row" sx={{overflowX: "visible"}} spacing={{xs: 1, sm: 2, md: 4}}
+                           divider={<Divider variant={"middle"} orientation="vertical" sx={{backgroundColor: "white"}}
+                                             flexItem/>}>
+                        {userHistory.map((history, index) => (
+                            <Box key={index} sx={{
+                                cursor: "pointer",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                minWidth: 'max-content'
+                            }} onClick={() => {
+                                navigate("/recommendations", {state: {country: history.country, city: history.city}})
+                            }}>
+                                <Typography variant="h6" sx={{fontWeight: "200", color: "white"}}
+                                >{history.city}</Typography>
+                                <Typography variant="body1" sx={{fontWeight: "600", color: "grey"}}
+                                            component="p">{history.country}</Typography>
+                            </Box>
+                        ))}
                     </Stack>
                 </>
             ) : null
             }
 
+        </Box>
         </Box>
     );
 };
