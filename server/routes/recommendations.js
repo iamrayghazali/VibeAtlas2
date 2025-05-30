@@ -15,7 +15,6 @@ router.get("/:userId/:city/:country", async (req, res) => {
     try {
         const { userId, city, country } = req.params;
 
-        // Find user by uid
         const user = await User.findOne({
             where: { uid: userId }
         });
@@ -34,7 +33,7 @@ router.get("/:userId/:city/:country", async (req, res) => {
 });
 
 router.get("/events", async (req, res) => {
-    const location = req.query.location; // Get location from query parameters
+    const location = req.query.location;
 
     try {
         const recommendations = await getEventRecommendations(location);

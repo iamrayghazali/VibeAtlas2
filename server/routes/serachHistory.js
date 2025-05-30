@@ -4,10 +4,9 @@ const router = express.Router();
 
 router.get('/:userId/searches', async (req, res) => {
     try {
-        // Change from SurveyQuestion to SearchHistory model
         const searchHistory = await SearchHistory.findAll({
             where: {
-                user_id: req.params.userId,  // Ensure the user_id matches the correct field in the SearchHistory model
+                user_id: req.params.userId,
             }
         });
 
@@ -31,15 +30,14 @@ router.post('/:userId/searches', async (req, res) => {
             return res.status(400).json({ message: 'Country and City are required' });
         }
 
-        // Create a new search history entry
         const searchHistory = await SearchHistory.create({
-            user_id: userId,  // The user ID from the route parameter
+            user_id: userId,
             country: country,
             city: city,
-            searched_at: new Date()  // Set the current date and time as the search time
+            searched_at: new Date()
         });
 
-        res.status(201).json(searchHistory);  // Respond with the created search history
+        res.status(201).json(searchHistory);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
