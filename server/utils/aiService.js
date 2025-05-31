@@ -1,5 +1,6 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-require('dotenv').config();
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
@@ -131,4 +132,4 @@ async function getTravelRecommendations(userPreferences, city, country) {
     }
 }
 
-module.exports = { getTravelRecommendations };
+export { getTravelRecommendations };

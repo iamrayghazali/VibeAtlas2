@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const { getTravelRecommendations } = require("../utils/aiService");
-const { getEventRecommendations } = require("../utils/eventService");
-const { User } = require("../models");
+import express from 'express';
+import { getTravelRecommendations } from '../utils/aiService.js';
+import { getEventRecommendations } from '../utils/eventService.js';
+import { User } from '../models/index.js';
 
+const router = express.Router();
 //TODO: delete, have real user preference data instead
 const userPreferences = [
     { question_id: 1, option_id: 2 },  // Outdoor adventures
@@ -48,4 +48,4 @@ router.get("/events", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

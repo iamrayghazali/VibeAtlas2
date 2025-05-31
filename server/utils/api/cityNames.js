@@ -1,5 +1,7 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const geoUsername = process.env.GEONAMES_USERNAME;
 
@@ -7,7 +9,7 @@ if (!geoUsername) {
     console.error("❌ No Geonames username found in environment variables");
 }
 
-async function getCityNames(country) {
+export async function getCityNames(country) {
     const url = `http://api.geonames.org/searchJSON?country=${country}&featureClass=P&maxRows=1000&username=${geoUsername}`;
 
     try {
@@ -23,5 +25,3 @@ async function getCityNames(country) {
         return [];
     }
 }
-
-module.exports = { getCityNames };
