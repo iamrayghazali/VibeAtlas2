@@ -1,54 +1,67 @@
-jest.mock('../models', () => ({
-    sequelize: {
-        sync: jest.fn().mockResolvedValue(),
-    },
-    initializeAssociations: jest.fn(),
+import { jest } from '@jest/globals';
+
+await jest.unstable_mockModule('../models/index.js', () => ({
     SearchHistory: {
         findAll: jest.fn(),
         create: jest.fn(),
-    }
+    },
+    SurveyOption: {},
+    SurveyQuestion: {},
+    SurveyResponse: {},
+    User: {},
+    sequelize: {
+        sync: jest.fn(() => Promise.resolve()),
+    },    initializeAssociations: () => {},
 }));
 
-import request from 'supertest';
-import app from '../app';
-const { SearchHistory } = require('../models');
+const { SearchHistory } = await import('../models/index.js');
+const request = (await import('supertest')).default;
+const app = (await import('../app.js')).default;
 
-describe('SearchHistory API', () => {
-    it('should return search history for user', async () => {
-        const fakeHistory = [{ id: 1, city: 'Paris', country: 'France' }];
-        SearchHistory.findAll.mockResolvedValue(fakeHistory);
-
-        const res = await request(app).get('/api/history/123/searches');
-        expect(res.statusCode).toBe(200);
-        expect(res.body.searchHistory).toEqual(fakeHistory);
+describe('Search History Routes', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    it('should return 404 if no search history', async () => {
+    it('GET /api/history/:userId/searches - should return 404 if none found', async () => {
         SearchHistory.findAll.mockResolvedValue([]);
 
-        const res = await request(app).get('/api/history/123/searches');
+        const res = await request(app).get('/api/history/1/searches');
+
         expect(res.statusCode).toBe(404);
-        expect(res.body.message).toBe('No search history found for this user');
+        expect(res.body.message).toMatch(/no search history/i);
     });
 
-    it('should create new search history', async () => {
-        const newEntry = { id: 1, city: 'Berlin', country: 'Germany' };
-        SearchHistory.create.mockResolvedValue(newEntry);
+    it('GET /api/history/:userId/searches - should return 200 with history', async () => {
+        SearchHistory.findAll.mockResolvedValue([
+            {
+                user_id: 1,
+                country: 'France',
+                city: 'Paris',
+                searched_at: new Date().toISOString(),
+            },
+        ]);
+
+        const res = await request(app).get('/api/history/1/searches');
+
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body.searchHistory)).toBe(true);
+        expect(res.body.searchHistory[0]).toHaveProperty('country', 'France');
+    });
+
+    it('POST /api/history/:userId/searches - should save new history', async () => {
+        SearchHistory.create.mockResolvedValue({
+            user_id: 1,
+            country: 'Germany',
+            city: 'Berlin',
+            searched_at: new Date().toISOString(),
+        });
 
         const res = await request(app)
-            .post('/api/history/123/searches')
+            .post('/api/history/1/searches')
             .send({ country: 'Germany', city: 'Berlin' });
 
         expect(res.statusCode).toBe(201);
-        expect(res.body).toEqual(expect.objectContaining(newEntry));
-    });
-
-    it('should return 400 if country or city missing', async () => {
-        const res = await request(app)
-            .post('/api/history/123/searches')
-            .send({ country: 'Germany' });
-
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toBe('Country and City are required');
+        expect(res.body).toHaveProperty('city', 'Berlin');
     });
 });

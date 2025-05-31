@@ -1,5 +1,9 @@
-const axios = require("axios");
-require('dotenv').config();
+import axios from "axios";
+import dotenv from 'dotenv';
+
+
+dotenv.config();
+
 
 const apiKey = process.env.TICKETMASTER_API_KEY;
 const openCageApiKey = process.env.OPENCAGE_API_KEY;
@@ -61,4 +65,4 @@ async function getCoordinates(location) {
     }
 }
 
-module.exports = { getEventRecommendations };
+export { getEventRecommendations };

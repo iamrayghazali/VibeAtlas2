@@ -1,99 +1,53 @@
-const sequelize = require('../config/db');
-const { DataTypes } = require('sequelize');
-
-// Define models without associations
+import sequelize from '../config/db.js';
+import { DataTypes } from 'sequelize';
 
 const User = sequelize.define('User', {
-    uid: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    email: {
-        type: DataTypes.STRING,
-    },
-    display_name: {
-        type: DataTypes.STRING,
-    },
-    created_at: {
-        type: DataTypes.DATE,
-    }
+    uid: { type: DataTypes.STRING, allowNull: false, unique: true },
+    email: { type: DataTypes.STRING },
+    display_name: { type: DataTypes.STRING },
+    created_at: { type: DataTypes.DATE }
 }, {
-    tableName: 'users',  // Explicit table name
-    createdAt: 'created_at',  // Map Sequelize's createdAt to your column
-    timestamps: false  // Disable timestamps
+    tableName: 'users',
+    createdAt: 'created_at',
+    timestamps: false
 });
 
 const SurveyQuestion = sequelize.define('SurveyQuestion', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    question_text: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    question_text: { type: DataTypes.STRING, allowNull: false }
 }, {
     tableName: 'survey_questions',
-    timestamps: false  // Disable timestamps
+    timestamps: false
 });
 
 const SurveyOption = sequelize.define('SurveyOption', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    question_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    option_text: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    question_id: { type: DataTypes.INTEGER, allowNull: false },
+    option_text: { type: DataTypes.STRING, allowNull: false }
 }, {
-    tableName: 'survey_options',  // Explicit table name
-    timestamps: false  // Disable timestamps
+    tableName: 'survey_options',
+    timestamps: false
 });
 
 const SurveyResponse = sequelize.define('SurveyResponse', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    }
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
 }, {
     tableName: 'survey_responses',
-    timestamps: false  // Disable timestamps
+    timestamps: false
 });
 
 const SearchHistory = sequelize.define('SearchHistory', {
-    user_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    country: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    city: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    searched_at: {
-        type: DataTypes.DATE,
-        allowNull: false
-    }
+    user_id: { type: DataTypes.INTEGER, allowNull: false },
+    country: { type: DataTypes.STRING, allowNull: false },
+    city: { type: DataTypes.STRING, allowNull: false },
+    searched_at: { type: DataTypes.DATE, allowNull: false }
 }, {
-    tableName: 'search_history',  // Explicit table name
-    timestamps: false  // Disable timestamps
+    tableName: 'search_history',
+    timestamps: false
 });
 
-// Define associations in a function
+// Define associations
 function initializeAssociations() {
-    // SurveyQuestion to SurveyOption
     SurveyQuestion.hasMany(SurveyOption, {
         foreignKey: 'question_id',
         as: 'options'
@@ -104,7 +58,6 @@ function initializeAssociations() {
         as: 'question'
     });
 
-    // SurveyResponse associations
     SurveyResponse.belongsTo(User, {
         foreignKey: 'user_id',
         as: 'user'
@@ -120,19 +73,18 @@ function initializeAssociations() {
         as: 'option'
     });
 
-    // Add association for SearchHistory
     SearchHistory.belongsTo(User, {
         foreignKey: 'user_id',
         as: 'user'
     });
 }
 
-module.exports = {
+export {
     sequelize,
     User,
     SurveyQuestion,
     SurveyOption,
     SurveyResponse,
-    SearchHistory,  // Export SearchHistory model
+    SearchHistory,
     initializeAssociations
 };
