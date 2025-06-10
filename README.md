@@ -1,4 +1,5 @@
 # VibeAtlas
+**VibeAtlas** is a smart travel companion that uses user-selected preferences and AI to generate curated destination suggestions — built for people who want to vibe, not search.
 
 ## Table of Contents
 
@@ -19,8 +20,6 @@ Traveling? Looking for something fun to do?
 Get AI-powered personalised suggestions for places to visit: from buzzing city nights to hidden paradise escapes, VibeAtlas serves up instant recommendations that match your energy.
 
 It’s free, effortless, and actually understands your style. Whether you’re feeling city lights, beach waves, or something off the grid, we’ve got you.
-
-**VibeAtlas** is a smart travel companion that uses user-selected preferences and AI to generate curated destination suggestions — built for people who want to vibe, not search.
 
 ---
 
