@@ -1,5 +1,5 @@
-const express = require('express');
-const {SearchHistory} = require("../models");
+import express from 'express';
+import { SearchHistory } from '../models/index.js';
 const router = express.Router();
 
 router.get('/:userId/searches', async (req, res) => {
@@ -44,4 +44,4 @@ router.post('/:userId/searches', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
