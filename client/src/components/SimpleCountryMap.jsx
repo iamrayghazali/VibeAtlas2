@@ -32,59 +32,55 @@ const SingleCountryMap = ({countryName}) => {
 
         const geoJson = feature(worldData, worldData.objects.world);
         const country = geoJson.features.find((f) => f.id === countryId);
-
         if (!country) return;
 
         setCountryFeature(country);
 
-        const projection = geoMercator();
-        const pathGenerator = geoPath().projection(projection);
-        const bounds = pathGenerator.bounds(country);
-        const [[x0, y0], [x1, y1]] = bounds;
+        // Setup a new projection that fits the country inside 800x600
+        const projection = geoMercator().fitExtent([[0, 0], [800, 600]], country);
 
-        projection.fitExtent([[0, 0], [800, 600]], country);
+        // Save projection config: we only need the scale and center
+        const center = projection.invert([400, 300]); // center of the map
         const scale = projection.scale();
 
         setMapSettings({
-            center: projection.invert([(x0 + x1) / 2, (y0 + y1) / 2]),
-            zoom: scale / 200,
+            center,
+            zoom: scale,
         });
     }, [countryId]);
 
     return (
-        <div className="bg-white w-60 h-80 flex items-center justify-center">
+        <div className="bg-white w-max h-60 flex items-center justify-center">
             <ComposableMap
                 projection="geoMercator"
                 width={800}
                 height={600}
+                projectionConfig={{
+                    center: mapSettings.center,
+                    scale: mapSettings.zoom,
+                }}
                 style={{ width: "100%", height: "100%" }}
             >
-                <ZoomableGroup
-                    center={mapSettings.center}
-                    zoom={mapSettings.zoom}
-                    disablePanning
+                <Geographies
+                    geography={{
+                        type: "FeatureCollection",
+                        features: countryFeature ? [countryFeature] : [],
+                    }}
                 >
-                    <Geographies
-                        geography={{
-                            type: "FeatureCollection",
-                            features: [countryFeature],
-                        }}
-                    >
-                        {({ geographies }) =>
-                            geographies.map((geo) => (
-                                <Geography
-                                    key={geo.rsmKey}
-                                    geography={geo}
-                                    style={{
-                                        default: { fill: "#D6D6DA", stroke: "#000" },
-                                        hover: { fill: "#F53", stroke: "#000" },
-                                        pressed: { fill: "#E42" },
-                                    }}
-                                />
-                            ))
-                        }
-                    </Geographies>
-                </ZoomableGroup>
+                    {({ geographies }) =>
+                        geographies.map((geo) => (
+                            <Geography
+                                key={geo.rsmKey}
+                                geography={geo}
+                                style={{
+                                    default: { fill: "#F0EAD6", stroke: "#000" },
+                                    hover: { fill: "#F18F01", stroke: "#000" },
+                                    pressed: { fill: "#E42" },
+                                }}
+                            />
+                        ))
+                    }
+                </Geographies>
             </ComposableMap>
         </div>
     );
