@@ -159,7 +159,6 @@ function Home() {
                                 "@media (min-width: 768px)": {
                                     gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
                                     minHeight: "40vh",
-
                                 },
                             }}>
                                 <CircularText
@@ -168,7 +167,7 @@ function Home() {
                                     spinDuration={50}
                                     textColor="text-carrot"
                                     size="120"
-                                    className="custom-class text-2xl"
+                                    className="text-2xl"
                                 />
                                 <Box sx={{
                                     display: "grid",
