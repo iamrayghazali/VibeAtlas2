@@ -52,7 +52,7 @@ const RowOfNumbers = () => {
                                     fontFamily: "Lato",
                                     fontWeight: "bold",
                                     margin: "1rem",
-                                    fontSize: "1.5rem", // Adjusted font size for responsiveness
+                                    fontSize: "2rem", // Adjusted font size for responsiveness
                                     "@media (max-width: 768px)": {
                                         fontSize: "1.2rem", // Smaller font on mobile
                                     },
@@ -66,7 +66,7 @@ const RowOfNumbers = () => {
                             <CountUp
                                 addPlus={true}
                                 from={0}
-                                to={10000}
+                                to={100000}
                                 separator=","
                                 direction="up"
                                 duration={1}
@@ -81,9 +81,9 @@ const RowOfNumbers = () => {
                                     fontFamily: "Lato",
                                     fontWeight: "bold",
                                     margin: "1rem",
-                                    fontSize: "1.5rem", // Adjusted font size for responsiveness
+                                    fontSize: "2rem",
                                     "@media (max-width: 768px)": {
-                                        fontSize: "1.2rem", // Smaller font on mobile
+                                        fontSize: "1.2rem",
                                     },
                                 }}
                             >
@@ -108,9 +108,9 @@ const RowOfNumbers = () => {
                                     fontFamily: "Lato",
                                     fontWeight: "bold",
                                     margin: "1rem",
-                                    fontSize: "1.5rem", // Adjusted font size for responsiveness
+                                    fontSize: "2rem",
                                     "@media (max-width: 768px)": {
-                                        fontSize: "1.2rem", // Smaller font on mobile
+                                        fontSize: "1.2rem",
                                     },
                                 }}
                             >
