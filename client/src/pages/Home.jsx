@@ -154,53 +154,47 @@ function Home() {
                                 display: "grid",
                                 gridTemplateColumns: "1fr",  // Default to single column for mobile
                                 gap: "16px",
+                                minHeight: "100vh",
                                 justifyItems: "center",
                                 "@media (min-width: 768px)": {
                                     gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
+                                    minHeight: "40vh",
+
                                 },
                             }}>
                                 <CircularText
                                     text="VIBE*ATLAS*VIBE*ATLAS*"
                                     onHover="speedUp"
-                                    spinDuration={20}
+                                    spinDuration={50}
                                     textColor="text-carrot"
-                                    size="200"
-                                    className="custom-class mt-10 md:mt-30 text-2xl"
+                                    size="120"
+                                    className="custom-class text-2xl"
                                 />
                                 <Box sx={{
                                     display: "grid",
                                     gridTemplateRows: "repeat(2, 1fr)",
                                     gap: "16px",
-                                    marginTop: "3rem"
+                                    height: "30vh",
                                 }}>
-                                    <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}}
-                                                variant={"h6"}>
-                                        Traveling? Looking for something fun to do? Get <span className={"text-carrot"}>AI-powered personalised</span> suggestions
-                                        for places
-                                        to visit: from buzzing city
-                                        nights to hidden paradise escapes, we serve up instant recommendations that
-                                        match <span
-                                        className={"text-carrot"}> your energy</span>.
+                                   <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}} variant={"h6"}>
+                                        Not sure where to go? 🎯 VibeAtlas gives you <span className="text-carrot">AI-powered travel vibes</span> that match your mood — city nights, hidden gems, or beach chills.
                                     </Typography>
-                                    <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}}
-                                                variant={"h6"}>
-                                        It’s free, <span className={"text-carrot"}>effortless</span>, and actually
-                                        understands your
-                                        style. Whether you’re feeling city lights, beach waves, or something off the
-                                        grid, we’ve got
-                                        you. Skip the guesswork, find your vibe, and let VibeAtlas do the planning. 🔥
+                                    <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}} variant={"h6"}>
+                                        It’s <span className="text-carrot">free, fast,</span> and actually gets you. Tell us your vibe, we handle the rest. 🚀
                                     </Typography>
                                     <Box sx={{
+                                        marginTop: "2rem",
                                         display: "grid",
                                         alignItems: "center",
                                         gridTemplateColumns: "1fr",
                                         justifyItems: "center",
+                                        gap: "24px",
                                         "@media (min-width: 768px)": {
-                                            gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
+                                            gridTemplateColumns: "repeat(2, 1fr)",
+                                            margin: "0 auto"
                                         },
                                     }}>
                                         <Button variant="contained" sx={{
-                                            marginTop: "2rem",
                                             backgroundColor: "#F18F01",
                                             color: "black",
                                             textDecoration: "none",
@@ -208,12 +202,11 @@ function Home() {
                                             textTransform: "none",
                                         }} onClick={() => navigate("/location")}>Select Location</Button>
                                         <Button variant="outlined" sx={{
-                                            marginTop: "2rem",
                                             textTransform: "none",
                                             borderColor: "white",
                                             color: "white",
                                             textDecoration: "none"
-                                        }} onClick={() => navigate("/about")}>Learn More</Button>
+                                        }} onClick={() => guideRef.current?.scrollIntoView({behavior: 'smooth'})}>Learn More</Button>
                                     </Box>
 
                                 </Box>
