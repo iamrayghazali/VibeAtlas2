@@ -50,7 +50,7 @@ const SingleCountryMap = ({countryName}) => {
     }, [countryId]);
 
     return (
-        <div className="bg-white w-max h-60 flex items-center justify-center">
+        <div className=" w-max h-60 flex items-center justify-center">
             <ComposableMap
                 projection="geoMercator"
                 width={800}

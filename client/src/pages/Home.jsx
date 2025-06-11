@@ -91,22 +91,23 @@ function Home() {
                                     animate={{opacity: 1, y: 0}}
                                     transition={{duration: 0.6, ease: "easeOut"}}
                                 >
-                                    <Typography
-                                        variant="h3"
-                                        sx={{
-                                            fontSize: {xs: "2rem", md: "3rem", lg: "4rem", xl: "5rem"},
-                                            fontFamily: "Lato",
-                                            lineHeight: "0.9",
-                                            margin: "1rem",
-                                            fontWeight: "600",
-                                            display: "inline-block",  // Prevents wrapping if there’s enough space
-                                            whiteSpace: "nowrap",     // Prevents line break
-                                            overflow: "hidden",       // Ensures that overflowing content is hidden (if necessary)
-                                        }}
-                                    >
-                                        What’s the move?
-                                    </Typography>
-                                </motion.div>
+
+                                        <Typography
+                                            variant="h3"
+                                            sx={{
+                                                fontSize: {xs: "2rem", md: "3rem", lg: "4rem", xl: "5rem"},
+                                                fontFamily: "Lato",
+                                                lineHeight: "0.9",
+                                                margin: "1rem",
+                                                fontWeight: "600",
+                                                display: "inline-block",
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                            }}
+                                        >
+                                            What’s the move?
+                                        </Typography>
+                                    </motion.div>
                                 <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "#505050"}}>
                                     AI makes it easy to find places and events that matches you
                                 </Typography>
@@ -175,12 +176,21 @@ function Home() {
                                     gap: "16px",
                                     height: "30vh",
                                 }}>
-                                   <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}} variant={"h6"}>
-                                        Not sure where to go? 🎯 VibeAtlas gives you <span className="text-carrot">AI-powered travel vibes</span> that match your mood — city nights, hidden gems, or beach chills.
-                                    </Typography>
-                                    <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}} variant={"h6"}>
-                                        It’s <span className="text-carrot">free, fast,</span> and actually gets you. Tell us your vibe, we handle the rest. 🚀
-                                    </Typography>
+                                        <Typography
+                                            sx={{ color: "white", fontFamily: "Lato", textAlign: "center" }}
+                                            variant={"h6"}
+                                        >
+                                            Not sure where to go? 🎯 VibeAtlas gives you{" "}
+                                            <span className="text-carrot">AI-powered travel vibes</span> that match your
+                                            mood — city nights, hidden gems, or beach chills.
+                                        </Typography>
+                                        <Typography
+                                            sx={{ color: "white", fontFamily: "Lato", textAlign: "center" }}
+                                            variant={"h6"}
+                                        >
+                                            It’s <span className="text-carrot">free, fast,</span> and actually gets you.
+                                            Tell us your vibe, we handle the rest. 🚀
+                                        </Typography>
                                     <Box sx={{
                                         marginTop: "2rem",
                                         display: "grid",
