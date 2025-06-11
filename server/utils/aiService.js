@@ -10,7 +10,7 @@ if (!apiKey) {
 const genAI = new GoogleGenerativeAI(apiKey);
 
 function structureUserPreferences() {
-    //TODO
+    //aTODO
 }
 
 async function getTravelRecommendations(userPreferences, city, country) {
@@ -89,7 +89,7 @@ async function getTravelRecommendations(userPreferences, city, country) {
                         "location": "Precise City and Country",
                         "description": "Short, engaging description (max 3 sentences)",
                         "category": "Should be one of the following: sightseeing, adventures, beach, historical, food, shopping",
-                        "price": "use $ signs as to tell the price of the place, $ is cheap $$$$ is expensive", 
+                        "price": "use $ signs as to tell the price of the place, $ is cheap $$$$ is expensive, must include all 4 variants", 
                         "coordinates": {
                             "latitude": valid coordinates.latitude,
                             "longitude": valid coordinates.longitude, 

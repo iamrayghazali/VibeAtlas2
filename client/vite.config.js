@@ -10,7 +10,7 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'http://localhost:7050', // Forward all /api requests to the backend at http://localhost:5000
+      '/api': 'http://localhost:7050', // Forward all /api requests to the backend
     },
   },
 })

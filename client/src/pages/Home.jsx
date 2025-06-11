@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
 import axios from "axios";
 import {Button, Typography, Container, Box, Grid, Divider, CircularProgress} from "@mui/material";
@@ -12,6 +12,9 @@ import RowOfCities from "../components/RowOfCities.jsx";
 import RowOfNumbers from "../components/RowOfNumbers.jsx";
 import Footer from "../components/Footer.jsx";
 import Stepper, {Step} from '../components/Stepper.jsx';
+import LoadingPage from "./LoadingPage.jsx";
+import {onAuthStateChanged} from "firebase/auth";
+import {auth} from "../firebaseConfig.js";
 
 
 function Home() {
@@ -19,6 +22,7 @@ function Home() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const {user} = useAuth();
+    const location = useLocation();
     const [surveyIsFilled, setSurveyIsFilled] = useState(null);
 
     useEffect(() => {
@@ -35,18 +39,31 @@ function Home() {
     }, [user]);
 
     useEffect(() => {
+        const stopAuthCheck = onAuthStateChanged(auth, () => {
             setLoading(false);
+        });
+        return () => stopAuthCheck();
+    }, []);
 
-    }, [user])
+    useEffect(() => {
+        if (location.state?.scrollToGuide) {
+            const timeout = setTimeout(() => {
+                document.getElementById("guide-section")?.scrollIntoView({ behavior: "smooth" });
+                // clean up state so it doesn't scroll again if you refresh
+                navigate(location.pathname, { replace: true, state: {} });
+            }, 100); //delay
+
+            return () => clearTimeout(timeout);
+        }
+    }, [location, navigate]);
+
 
     return (
         <>
             {loading ?
                 (
                     <>
-                        <Box sx={{position: "absolute", top: "45%", left: "45%", maxHeight: "100vh"}}>
-                            <CircularProgress size={"3rem"} color={"inherit"}/>
-                        </Box>
+                        <LoadingPage/>
                     </>
                 )
                 : (
@@ -74,22 +91,23 @@ function Home() {
                                     animate={{opacity: 1, y: 0}}
                                     transition={{duration: 0.6, ease: "easeOut"}}
                                 >
-                                    <Typography
-                                        variant="h3"
-                                        sx={{
-                                            fontSize: {xs: "2rem", md: "3rem", lg: "4rem", xl: "5rem"},
-                                            fontFamily: "Lato",
-                                            lineHeight: "0.9",
-                                            margin: "1rem",
-                                            fontWeight: "600",
-                                            display: "inline-block",  // Prevents wrapping if there’s enough space
-                                            whiteSpace: "nowrap",     // Prevents line break
-                                            overflow: "hidden",       // Ensures that overflowing content is hidden (if necessary)
-                                        }}
-                                    >
-                                        What’s the move?
-                                    </Typography>
-                                </motion.div>
+
+                                        <Typography
+                                            variant="h3"
+                                            sx={{
+                                                fontSize: {xs: "2rem", md: "3rem", lg: "4rem", xl: "5rem"},
+                                                fontFamily: "Lato",
+                                                lineHeight: "0.9",
+                                                margin: "1rem",
+                                                fontWeight: "600",
+                                                display: "inline-block",
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                            }}
+                                        >
+                                            What’s the move?
+                                        </Typography>
+                                    </motion.div>
                                 <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "#505050"}}>
                                     AI makes it easy to find places and events that matches you
                                 </Typography>
@@ -137,51 +155,55 @@ function Home() {
                                 display: "grid",
                                 gridTemplateColumns: "1fr",  // Default to single column for mobile
                                 gap: "16px",
+                                minHeight: "100vh",
                                 justifyItems: "center",
                                 "@media (min-width: 768px)": {
                                     gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
+                                    minHeight: "40vh",
                                 },
                             }}>
                                 <CircularText
                                     text="VIBE*ATLAS*VIBE*ATLAS*"
                                     onHover="speedUp"
-                                    spinDuration={20}
-                                    className="custom-class mt-10 md:mt-30 text-carrot"
+                                    spinDuration={50}
+                                    textColor="text-carrot"
+                                    size="120"
+                                    className="text-2xl"
                                 />
                                 <Box sx={{
                                     display: "grid",
                                     gridTemplateRows: "repeat(2, 1fr)",
                                     gap: "16px",
-                                    marginTop: "3rem"
+                                    height: "30vh",
                                 }}>
-                                    <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}}
-                                                variant={"h6"}>
-                                        Traveling? Looking for something fun to do? Get <span className={"text-carrot"}>AI-powered personalised</span> suggestions
-                                        for places
-                                        to visit: from buzzing city
-                                        nights to hidden paradise escapes, we serve up instant recommendations that
-                                        match <span
-                                        className={"text-carrot"}> your energy</span>.
-                                    </Typography>
-                                    <Typography sx={{color: "white", fontFamily: "Lato", textAlign: "center"}}
-                                                variant={"h6"}>
-                                        It’s free, <span className={"text-carrot"}>effortless</span>, and actually
-                                        understands your
-                                        style. Whether you’re feeling city lights, beach waves, or something off the
-                                        grid, we’ve got
-                                        you. Skip the guesswork, find your vibe, and let VibeAtlas do the planning. 🔥
-                                    </Typography>
+                                        <Typography
+                                            sx={{ color: "white", fontFamily: "Lato", textAlign: "center" }}
+                                            variant={"h6"}
+                                        >
+                                            Not sure where to go? 🎯 VibeAtlas gives you{" "}
+                                            <span className="text-carrot">AI-powered travel vibes</span> that match your
+                                            mood — city nights, hidden gems, or beach chills.
+                                        </Typography>
+                                        <Typography
+                                            sx={{ color: "white", fontFamily: "Lato", textAlign: "center" }}
+                                            variant={"h6"}
+                                        >
+                                            It’s <span className="text-carrot">free, fast,</span> and actually gets you.
+                                            Tell us your vibe, we handle the rest. 🚀
+                                        </Typography>
                                     <Box sx={{
+                                        marginTop: "2rem",
                                         display: "grid",
                                         alignItems: "center",
                                         gridTemplateColumns: "1fr",
                                         justifyItems: "center",
+                                        gap: "24px",
                                         "@media (min-width: 768px)": {
-                                            gridTemplateColumns: "repeat(2, 1fr)",  // Use two columns for medium and larger screens
+                                            gridTemplateColumns: "repeat(2, 1fr)",
+                                            margin: "0 auto"
                                         },
                                     }}>
                                         <Button variant="contained" sx={{
-                                            marginTop: "2rem",
                                             backgroundColor: "#F18F01",
                                             color: "black",
                                             textDecoration: "none",
@@ -189,19 +211,18 @@ function Home() {
                                             textTransform: "none",
                                         }} onClick={() => navigate("/location")}>Select Location</Button>
                                         <Button variant="outlined" sx={{
-                                            marginTop: "2rem",
                                             textTransform: "none",
                                             borderColor: "white",
                                             color: "white",
                                             textDecoration: "none"
-                                        }} onClick={() => navigate("/about")}>Learn More</Button>
+                                        }} onClick={() => guideRef.current?.scrollIntoView({behavior: 'smooth'})}>Learn More</Button>
                                     </Box>
 
                                 </Box>
                             </Box>
                         </Container>
                         <Container sx={{fontFamily: "Lato", backgroundColor: "white", minWidth: "100%"}}>
-                            <RowOfCities/>
+                            <RowOfCities user={!!user} />
                         </Container>
                         <Container ref={guideRef} sx={{fontFamily: "Lato", backgroundColor: "black", minWidth: "100%"}}>
                             <Box id="guide-section"

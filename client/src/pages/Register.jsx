@@ -1,9 +1,13 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {Card, Button, TextField, Typography, Box, Divider, CircularProgress} from "@mui/material";
 import isEmail from "validator/es/lib/isEmail.js";
 import axios from "axios";
+import Navbar from "../components/Navbar.jsx";
+import CircularText from "../components/CircularText.jsx";
+import bgImage from "../assets/auth-bg.jpg";
+import LoadingPage from "./LoadingPage.jsx";
 
 function Register() {
     const { register } = useAuth();
@@ -65,24 +69,36 @@ function Register() {
 
     //TODO fix auth
     if (loading) {
-        return <CircularProgress />;
+        return <LoadingPage />;
     }
 
     return (
+        <>
+        <Navbar/>
         <Box
             sx={{
                 display: "flex",
                 justifyContent: "center",
+                flexDirection: "column",
                 alignItems: "center",
-                height: "100vh",
-                background: "linear-gradient(135deg, #1F1C2C 0%, #928DAB 100%)",
+                backgroundImage: `url(${bgImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center", minHeight: "calc(100vh - 55px)", minWidth: "100%",
             }}
         >
+            <CircularText
+                text="VIBE*ATLAS*VIBE*ATLAS*"
+                onHover="speedUp"
+                size="200"
+                textColor="text-black"
+                spinDuration={20}
+                className="custom-class font-Lato text-2xl mb-10 text-black"
+            />
             <Card
                 sx={{
                     p: 5,
                     width: { xs: "90%", sm: "450px", md: "500px" },
-                    bgcolor: "rgba(255, 255, 255, 0.12)",
+                    backgroundColor: "rgba(255, 255, 255, 0.12)",
                     backdropFilter: "blur(15px)",
                     borderRadius: "20px",
                     boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.3)",
@@ -92,14 +108,14 @@ function Register() {
                     position: "relative",
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 600, color: "#fff", mb: 2 }}>
+                <Typography variant="h4" sx={{ fontWeight: 600, color: "black", mb: 2 }}>
                     Create Account
                 </Typography>
-                <Typography variant="subtitle2" sx={{ fontWeight: 100, color: "#fff"}}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 100, color: "black"}}>
                     It only takes 20 seconds to register
                 </Typography>
 
-                <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
+                <Divider sx={{ borderColor: "black", mb: 3 }} />
 
                 <form onSubmit={handleRegister}>
                     <TextField
@@ -110,15 +126,21 @@ function Register() {
                         error={!isValidEmail}
                         onChange={handleEmailChange}
                         sx={{
+                            fontWeight: "bold",
                             mb: 2,
                             "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.4)" },
+                                "& fieldset": { borderColor: "black" },
                                 "&:hover fieldset": { borderColor: "#fff" },
                                 "&.Mui-focused fieldset": { borderColor: "#fff" },
                             },
-                            input: { color: "#fff" },
-                            label: { color: "rgba(255,255,255,0.7)" },
-                            width: { xs: "90%", md: "60%" },
+                            input: { color: "black" },
+                            "& label": {
+                                color: "#F0EAD6",
+                            },
+                            "& label.Mui-focused": {
+                                fontWeight: "bold",
+                                color: "#F0EAD6", // color when floating
+                            },
                         }}
                     />
                     <TextField
@@ -128,15 +150,21 @@ function Register() {
                         fullWidth
                         onChange={(e) => setName(e.target.value)}
                         sx={{
+                            fontWeight: "bold",
                             mb: 2,
                             "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.4)" },
+                                "& fieldset": { borderColor: "black" },
                                 "&:hover fieldset": { borderColor: "#fff" },
                                 "&.Mui-focused fieldset": { borderColor: "#fff" },
                             },
-                            input: { color: "#fff" },
-                            label: { color: "rgba(255,255,255,0.7)" },
-                            width: { xs: "90%", md: "60%" },
+                            input: { color: "black" },
+                            "& label": {
+                                color: "#F0EAD6",
+                            },
+                            "& label.Mui-focused": {
+                                fontWeight: "bold",
+                                color: "#F0EAD6", // color when floating
+                            },
                         }}
                     />
 
@@ -147,16 +175,21 @@ function Register() {
                         fullWidth
                         onChange={(e) => setPassword(e.target.value)}
                         sx={{
-                            mb: 4,
+                            fontWeight: "bold",
+                            mb: 2,
                             "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.4)" },
+                                "& fieldset": { borderColor: "black" },
                                 "&:hover fieldset": { borderColor: "#fff" },
                                 "&.Mui-focused fieldset": { borderColor: "#fff" },
                             },
-                            input: { color: "#fff" },
-                            label: { color: "rgba(255,255,255,0.7)" },
-                            width: { xs: "90%", md: "60%" },
-
+                            input: { color: "black" },
+                            "& label": {
+                                color: "#F0EAD6",
+                            },
+                            "& label.Mui-focused": {
+                                fontWeight: "bold",
+                                color: "#F0EAD6", // color when floating
+                            },
                         }}
                     />
 
@@ -165,12 +198,13 @@ function Register() {
                             variant="contained"
                             type="submit"
                             sx={{
+                                color: "black",
                                 flex: 1,
                                 mr: 1,
                                 fontSize: "1.1rem",
                                 textTransform: "none",
-                                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
-                                "&:hover": { background: "linear-gradient(135deg, #fda085, #f6d365)" },
+                                background: "#F18F01",
+                                "&:hover": { background: "#F0EAD6" },
                                 maxWidth: { xs: "40%", md: "50%" },
                                 margin: "1rem"
                             }}
@@ -198,6 +232,7 @@ function Register() {
                 </Button>
             </Card>
         </Box>
+        </>
     );
 }
 

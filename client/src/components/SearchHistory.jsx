@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext.jsx";
-import {Box, Button, Typography} from "@mui/material";
+import React, {useEffect, useRef, useState} from "react";
+import {useAuth} from "../context/AuthContext.jsx";
+import {Box, Button, Divider, Paper, Stack, styled, Typography} from "@mui/material";
 import axios from "axios";
-import {map} from "framer-motion/m";
 import {useNavigate} from "react-router-dom";
 import AnimatedList from './AnimatedList'
 
@@ -11,12 +10,39 @@ const SearchHistory = () => {
     const [userHistory, setUserHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const {user} = useAuth();
+
+    const scrollRef = useRef(null);
+    const animationRef = useRef(null);
+    const [isHovered, setIsHovered] = useState(false);
+    const directionRef = useRef(1);
 
     useEffect(() => {
-            if (user && user.uid) {
-                fetchUserId();
+        const scrollContainer = scrollRef.current;
+        if (!scrollContainer || scrollContainer.scrollWidth <= scrollContainer.clientWidth) return;
+
+        const scroll = () => {
+            if (!isHovered) {
+                scrollContainer.scrollLeft += directionRef.current * 0.5;
+
+                const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                const currentScroll = Math.round(scrollContainer.scrollLeft);
+
+                if (currentScroll <= 0 || currentScroll >= Math.round(maxScrollLeft)) {
+                    directionRef.current *= -1;
+                }
             }
+            animationRef.current = requestAnimationFrame(scroll);
+        };
+
+        animationRef.current = requestAnimationFrame(scroll);
+        return () => cancelAnimationFrame(animationRef.current);
+    }, [isHovered, userHistory]);
+
+    useEffect(() => {
+        if (user && user.uid) {
+            fetchUserId();
+        }
     }, [user]);
 
     useEffect(() => {
@@ -36,7 +62,10 @@ const SearchHistory = () => {
     }, [userId]);
 
     const formatUserHistory = (userHistory) => {
-        return userHistory.map(item => `${item.city}, ${item.country}`);
+        return userHistory.map(item => ({
+            city: item.city,
+            country: item.country
+        }));
     };
 
     const fetchUserId = async () => {
@@ -54,29 +83,73 @@ const SearchHistory = () => {
         return <Box>Loading...</Box>;
     }
 
+
     return (
-        <Box>
-            <Typography variant="h6"  sx={{fontWeight: "600", fontColor: "black"}}  component="p">History</Typography>
-
-            { userHistory ? (<>
-                {userHistory.map((history, index) => (
-                            <Box key={index} sx={{cursor: "pointer"}} onClick={() => {
-                                navigate("/recommendations", { state: { country: history.country, city: history.city } })
+        <Box
+            sx={{
+                position: "relative",
+                width: "90%",
+                mx: "auto",
+                overflow: "hidden",
+            }}
+        >
+        <Box ref={scrollRef}
+             onMouseEnter={() => setIsHovered(true)}
+             onMouseLeave={() => setIsHovered(false)}
+             sx={{
+                 overflowX: "auto",
+                 whiteSpace: "nowrap",
+                 scrollbarWidth: "none",
+                 '&::-webkit-scrollbar': {display: 'none'},
+                 maxWidth: '100%',
+                 width: '100%',
+                 '&::before, &::after': {
+                     content: '""',
+                     position: 'absolute',
+                     top: 0,
+                     bottom: 0,
+                     width: '50px',
+                     zIndex: 1,
+                     pointerEvents: 'none',
+                 },
+                 '&::before': {
+                     left: 0,
+                     background: 'linear-gradient(to right, black, transparent)',
+                 },
+                 '&::after': {
+                     right: 0,
+                     background: 'linear-gradient(to left, black, transparent)',
+                 },
+             }}
+        >
+            {userHistory ? (
+                <>
+                    <Stack direction="row" sx={{overflowX: "visible"}} spacing={{xs: 1, sm: 2, md: 4}}
+                           divider={<Divider variant={"middle"} orientation="vertical" sx={{backgroundColor: "white"}}
+                                             flexItem/>}>
+                        {userHistory.map((history, index) => (
+                            <Box key={index} sx={{
+                                cursor: "pointer",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                minWidth: 'max-content'
+                            }} onClick={() => {
+                                navigate("/recommendations", {state: {country: history.country, city: history.city}})
                             }}>
-                                <Typography variant="body2"  sx={{fontWeight: "600", fontColor: "black"}}  component="p">{history.country}</Typography>
-                                <Typography variant="body1" sx={{fontWeight: "100", fontColor: "grey"}} component="p">{history.city}</Typography>
+                                <Typography variant="h6" sx={{fontWeight: "200", color: "white"}}
+                                >{history.city}</Typography>
+                                <Typography variant="body1" sx={{fontWeight: "600", color: "grey"}}
+                                            component="p">{history.country}</Typography>
                             </Box>
-                    ))}
-            </>) : null
+                        ))}
+                    </Stack>
+                </>
+            ) : null
             }
-            <AnimatedList
-                items={userHistory}
-                onItemSelect={(item, index) => console.log(item, index)}
-                showGradients={true}
-                enableArrowNavigation={true}
-                displayScrollbar={true}
-            />
 
+        </Box>
         </Box>
     );
 };

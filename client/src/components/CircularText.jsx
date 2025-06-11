@@ -22,6 +22,8 @@ const getTransition = (duration, from) => ({
 
 const CircularText = ({
                           text,
+                            size,
+                          textColor,
                           spinDuration = 20,
                           onHover = "speedUp",
                           className = "",
@@ -89,7 +91,8 @@ const CircularText = ({
     return (
         <motion.div
             initial={{ rotate: 0 }}
-            className={`mx-auto rounded-full w-[200px] h-[200px] text-white font-black text-center cursor-pointer origin-center ${className}`}
+            style={{ width: size, height: size }}
+            className={`mx-auto rounded-full text-white font-black text-center cursor-pointer origin-center relative ${className}`}
             animate={controls}
             onUpdate={(latest) => setCurrentRotation(Number(latest.rotate))}
             onMouseEnter={handleHoverStart}
@@ -105,7 +108,7 @@ const CircularText = ({
                 return (
                     <span
                         key={i}
-                        className="absolute inline-block inset-0 text-2xl transition-all duration-500 ease-[cubic-bezier(0,0,0,1)] text-carrot"
+                        className={`absolute inline-block inset-0  transition-all duration-500 ease-[cubic-bezier(0,0,0,1)] ${textColor}`}
                         style={{ transform, WebkitTransform: transform }}
                     >
             {letter}

@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Card, Button, TextField, Typography, Box, Divider } from "@mui/material";
 import isEmail from "validator/es/lib/isEmail.js";
+import Navbar from "../components/Navbar.jsx";
+import bgImage from "../assets/auth-bg.jpg";
+import CircularText from "../components/CircularText.jsx";
+import GoogleIcon from '@mui/icons-material/Google';
 
 function Login() {
-    const { login, googleLogin, currentUser } = useAuth();  // currentUser should be coming from AuthContext
+    const { login, googleLogin, currentUser } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -42,126 +46,147 @@ function Login() {
         }
     }, [user]);
 
-    //TODO fix two login pages
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100vh",
-                background: "linear-gradient(135deg, #1F1C2C 0%, #928DAB 100%)",
-            }}
-        >
-            <Card
+        <>
+        <Navbar/>
+            <Box
                 sx={{
-                    padding: 5,
-                    width: { xs: "90%", sm: "450px", md: "500px" },
-                    backgroundColor: "rgba(255, 255, 255, 0.12)",
-                    backdropFilter: "blur(15px)",
-                    borderRadius: "20px",
-                    boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.3)",
-                    textAlign: "center",
                     display: "flex",
-                    flexDirection: "column",
-                    position: "relative",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: "calc(100vh - 55px)",
+                    backgroundImage: `url(${bgImage})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 600, color: "#fff", mb: 2 }}>
-                    Login
-                </Typography>
-
-                <Divider sx={{ borderColor: "rgba(255,255,255,0.2)", mb: 3 }} />
-
-                <form onSubmit={handleLogin}>
-                    <TextField
-                        type="email"
-                        label="Email"
-                        variant="outlined"
-                        fullWidth
-                        error={!isValidEmail}
-                        helperText={!isValidEmail ? "Invalid email format" : ""}
-                        onChange={handleEmailChange}
-                        sx={{
-                            mb: 2,
-                            "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.4)" },
-                                "&:hover fieldset": { borderColor: "#fff" },
-                                "&.Mui-focused fieldset": { borderColor: "#fff" },
-                            },
-                            input: { color: "#fff" },
-                            label: { color: "rgba(255,255,255,0.7)" },
-                        }}
-                    />
-
-                    <TextField
-                        type="password"
-                        label="Password"
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => setPassword(e.target.value)}
-                        sx={{
-                            mb: 4,
-                            "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.4)" },
-                                "&:hover fieldset": { borderColor: "#fff" },
-                                "&.Mui-focused fieldset": { borderColor: "#fff" },
-                            },
-                            input: { color: "#fff" },
-                            label: { color: "rgba(255,255,255,0.7)" },
-                        }}
-                    />
-
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Button
-                            variant="contained"
-                            type="submit"
-                            sx={{
-                                flex: 1,
-                                mr: 1,
-                                fontSize: "1.1rem",
-                                textTransform: "none",
-                                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
-                                "&:hover": { background: "linear-gradient(135deg, #fda085, #f6d365)" },
-                            }}
-                            disabled={!isValidEmail || !email || !password}
-                        >
-                            Login
-                        </Button>
-                        <Button
-                            variant="contained"
-                            sx={{
-                                flex: 1,
-                                mr: 1,
-                                fontSize: "1.1rem",
-                                textTransform: "none",
-                                background: "linear-gradient(135deg, #ff9a9e, #fad0c4)",
-                                "&:hover": { background: "linear-gradient(135deg, #fda085, #f6d365)" },
-                            }}
-                            onClick={googleLogin}
-                        >
-                            Login with google
-                        </Button>
-                    </Box>
-                </form>
-
-                <Button
-                    variant="text"
-                    onClick={() => navigate("/register")}
+                <Card
                     sx={{
-                        textTransform: "none",
-                        position: "absolute",
-                        bottom: 16,
-                        right: 16,
-                        fontSize: "0.9rem",
-                        color: "rgba(255, 255, 255, 0.7)",
-                        "&:hover": { color: "#fff" },
+                        padding: 5,
+                        width: { xs: "90%", sm: "450px", md: "500px" },
+                        backgroundColor: "rgba(0, 0, 0, 0.12)",
+                        backdropFilter: "blur(5px)",
+                        borderRadius: "20px",
+                        boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.3)",
+                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    Sign up
-                </Button>
-            </Card>
-        </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 600, color: "black", mb: 2 }}>
+                        Login
+                    </Typography>
+
+                    <Divider sx={{ borderColor: "black", mb: 3}} />
+
+                    <form onSubmit={handleLogin}>
+                        <TextField
+                            type="email"
+                            label="Email"
+                            variant="outlined"
+                            fullWidth
+                            error={!isValidEmail}
+                            helperText={!isValidEmail ? "Invalid email" : ""}
+                            onChange={handleEmailChange}
+                            sx={{
+                                fontWeight: "bold",
+                                mb: 2,
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": { borderColor: "black" },
+                                    "&:hover fieldset": { borderColor: "#fff" },
+                                    "&.Mui-focused fieldset": { borderColor: "#fff" },
+                                },
+                                input: { color: "black" },
+                                "& label": {
+                                    color: "#F0EAD6",
+                                },
+                                "& label.Mui-focused": {
+                                    fontWeight: "bold",
+                                    color: "#F0EAD6",
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            type="password"
+                            label="Password"
+                            variant="outlined"
+                            fullWidth
+                            onChange={(e) => setPassword(e.target.value)}
+                            sx={{
+                                fontWeight: "bold",
+                                mb: 2,
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": { borderColor: "black" },
+                                    "&:hover fieldset": { borderColor: "#fff" },
+                                    "&.Mui-focused fieldset": { borderColor: "#fff" },
+                                },
+                                input: { color: "black" },
+                                "& label": {
+                                    color: "#F0EAD6",
+                                },
+                                "& label.Mui-focused": {
+                                    fontWeight: "bold",
+                                    color: "#F0EAD6",
+                                },
+                            }}
+                        />
+
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Button
+                                variant="contained"
+                                type="submit"
+                                sx={{
+                                    flex: 1,
+                                    mr: 1,
+                                    fontSize: "1.1rem",
+                                    textTransform: "none",
+                                    background: "#F0EAD6",
+                                    "&:hover": { background: "#F18F01" },
+                                }}
+                                disabled={!isValidEmail || !email || !password}
+                            >
+                                Login
+                            </Button>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    color: "black",
+                                    flex: 1,
+                                    mr: 1,
+                                    fontSize: "1.1rem",
+                                    textTransform: "none",
+                                    background: "#F0EAD6",
+                                    fontWeight: "bold",
+                                    "&:hover": { background: "#F18F01" },
+                                }}
+                                onClick={googleLogin}
+                            >
+                                <GoogleIcon sx={{margin: "10px"}} /> Google
+                            </Button>
+                        </Box>
+                    </form>
+
+                    <Button
+                        variant="text"
+                        onClick={() => navigate("/register")}
+                        sx={{
+                            textTransform: "none",
+                            position: "absolute",
+                            bottom: 5,
+                            right: 20,
+                            fontSize: "0.9rem",
+                            color: "rgba(255, 255, 255, 0.7)",
+                            "&:hover": { color: "black" },
+                        }}
+                    >
+                        Sign up
+                    </Button>
+                </Card>
+            </Box>
+        </>
+
     );
 }
 

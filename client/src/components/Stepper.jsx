@@ -48,6 +48,7 @@ export default function Stepper({
     const handleComplete = () => {
         setDirection(1);
         updateStep(totalSteps + 1);
+        setCurrentStep(1);
     };
 
     return (
@@ -123,7 +124,7 @@ export default function Stepper({
                                 className="duration-350 flex items-center justify-center rounded-full bg-black py-1.5 px-3.5 font-medium tracking-tight text-white transition hover:bg-carrot active:bg-green-700"
                                 {...nextButtonProps}
                             >
-                                {isLastStep ? "Complete" : nextButtonText}
+                                {isLastStep ? "Restart" : nextButtonText}
                             </button>
                         </div>
                     </div>
