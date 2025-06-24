@@ -1,86 +1,62 @@
 import React, { useEffect, useState } from "react";
-import {
-    ComposableMap,
-    ZoomableGroup,
-    Geographies,
-    Geography,
-} from "react-simple-maps";
+import {ComposableMap, Geographies, Geography, ZoomableGroup} from "react-simple-maps";
 import { feature } from "topojson-client";
-import { geoPath, geoMercator } from "d3-geo";
+import { geoMercator } from "d3-geo";
 import worldData from "../assets/map-data.json";
 
-const SingleCountryMap = ({countryName}) => {
-    const [countryId, setCountryId] = useState(null);
+const SingleCountryMap = ({ countryName }) => {
     const [countryFeature, setCountryFeature] = useState(null);
-    const [mapSettings, setMapSettings] = useState({
-        center: [0, 0],
-        zoom: 1,
-    });
+    const [mapSettings, setMapSettings] = useState({ center: [0, 0], zoom: 1 });
 
     useEffect(() => {
-        const geoId = worldData.objects.world.geometries.find(
-            g => g.properties.name.toLowerCase() === countryName.toLowerCase()
-        )?.id;
-
-        if (!geoId) return;
-
-        setCountryId(geoId);
-    }, [countryName]);
-
-    useEffect(() => {
-        if (!countryId) return;
-
         const geoJson = feature(worldData, worldData.objects.world);
-        const country = geoJson.features.find((f) => f.id === countryId);
-        if (!country) return;
+        const country = geoJson.features.find(
+            f => f.properties.name.toLowerCase() === countryName.toLowerCase()
+        );
 
+        if (!country) return;
         setCountryFeature(country);
 
-        // Setup a new projection that fits the country inside 800x600
-        const projection = geoMercator().fitExtent([[0, 0], [800, 600]], country);
-
-        // Save projection config: we only need the scale and center
-        const center = projection.invert([400, 300]); // center of the map
-        const scale = projection.scale();
+        // Manually compute center
+        const [xMin, yMin, xMax, yMax] = country.bbox || computeBBox(country);
+        const centerX = (xMin + xMax) / 2;
+        const centerY = (yMin + yMax) / 2;
 
         setMapSettings({
-            center,
-            zoom: scale,
+            center: [centerX, centerY],
+            zoom: 4.5, // Try 5–8 depending on country size
         });
-    }, [countryId]);
+    }, [countryName]);
+
+
+    const computeBBox = (feature) => {
+        const coords = feature.geometry.coordinates.flat(Infinity);
+        const xs = coords.filter((_, i) => i % 2 === 0);
+        const ys = coords.filter((_, i) => i % 2 === 1);
+        return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+    };
+
 
     return (
-        <div className=" w-max h-60 flex items-center justify-center">
-            <ComposableMap
-                projection="geoMercator"
-                width={800}
-                height={600}
-                projectionConfig={{
-                    center: mapSettings.center,
-                    scale: mapSettings.zoom,
-                }}
-                style={{ width: "100%", height: "100%" }}
-            >
-                <Geographies
-                    geography={{
-                        type: "FeatureCollection",
-                        features: countryFeature ? [countryFeature] : [],
-                    }}
-                >
-                    {({ geographies }) =>
-                        geographies.map((geo) => (
-                            <Geography
-                                key={geo.rsmKey}
-                                geography={geo}
-                                style={{
-                                    default: { fill: "#F0EAD6", stroke: "#000" },
-                                    hover: { fill: "#F18F01", stroke: "#000" },
-                                    pressed: { fill: "#E42" },
-                                }}
-                            />
-                        ))
-                    }
-                </Geographies>
+        <div className="w-xl bg-amber-50 h-60 flex items-center justify-center">
+            <ComposableMap width={800} height={600}>
+                <ZoomableGroup center={mapSettings.center} zoom={mapSettings.zoom}>
+                    <Geographies geography={{ type: "FeatureCollection", features: [countryFeature] }}>
+                        {({ geographies }) =>
+                            geographies.map((geo) => (
+                                <Geography
+                                    key={geo.rsmKey}
+                                    geography={geo}
+                                    style={{
+                                        default: { fill: "#f0ead6", outline: "none" },
+                                        hover: { fill: "#ffcc80", outline: "none" },
+                                        pressed: { fill: "#ffb74d", outline: "none" },
+                                    }}
+                                />
+                            ))
+                        }
+                    </Geographies>
+                </ZoomableGroup>
             </ComposableMap>
         </div>
     );
