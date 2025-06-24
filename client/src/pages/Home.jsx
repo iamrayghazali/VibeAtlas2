@@ -15,6 +15,7 @@ import Stepper, {Step} from '../components/Stepper.jsx';
 import LoadingPage from "./LoadingPage.jsx";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "../firebaseConfig.js";
+import AnimatedWrapper from "../components/AnimatedWrapper.jsx";
 
 
 function Home() {
@@ -63,7 +64,7 @@ function Home() {
             {loading ?
                 (
                     <>
-                        <LoadingPage/>
+                            <LoadingPage/>
                     </>
                 )
                 : (
@@ -108,21 +109,26 @@ function Home() {
                                             What’s the move?
                                         </Typography>
                                     </motion.div>
+                                <AnimatedWrapper>
                                 <Typography variant="subtitle1" sx={{fontFamily: "Lato", color: "#505050"}}>
                                     AI makes it easy to find places and events that matches you
                                 </Typography>
+                                </AnimatedWrapper>
                                 {
                                     user ? (
                                         <>
+                                        <AnimatedWrapper>
                                             <Button variant="contained" sx={{
                                                 backgroundColor: "#F18F01",
                                                 color: "black",
                                                 marginTop: "8rem",
                                                 textDecoration: "none"
                                             }} onClick={() => navigate("/location")}>Select Location</Button>
+                                        </AnimatedWrapper>
                                         </>
                                     ) : (
                                         <>
+                                        <AnimatedWrapper>
                                             <Button variant="contained" sx={{
                                                 textTransform: "none",
                                                 marginTop: "2rem",
@@ -132,9 +138,12 @@ function Home() {
                                                 paddingRight: "25px"
                                             }} onClick={() => guideRef.current?.scrollIntoView({behavior: 'smooth'})}>Go
                                                 to Guide</Button>
+                                        </AnimatedWrapper>
+                                            <AnimatedWrapper>
                                             <Button variant="outlined" color={"black"}
                                                     sx={{textTransform: "none", marginTop: "1rem"}}
                                                     onClick={() => navigate("/login")}>Login</Button>
+                                            </AnimatedWrapper>
                                         </>
                                     )
                                 }
@@ -148,8 +157,10 @@ function Home() {
                             borderTop: "1rem",
                             borderColor: "white"
                         }}>
+                        <AnimatedWrapper>
                             <RowOfNumbers/>
-
+                        </AnimatedWrapper>
+                        <AnimatedWrapper>
                             <Box id="info-section" sx={{
                                 padding: "3rem",
                                 display: "grid",
@@ -220,10 +231,14 @@ function Home() {
 
                                 </Box>
                             </Box>
+                        </AnimatedWrapper>
                         </Container>
-                        <Container sx={{fontFamily: "Lato", backgroundColor: "white", minWidth: "100%"}}>
+                    <AnimatedWrapper>
+                        <Container sx={{fontFamily: "Lato", backgroundColor: "", minWidth: "100%"}}>
                             <RowOfCities user={!!user} />
                         </Container>
+                    </AnimatedWrapper>
+                    <AnimatedWrapper>
                         <Container ref={guideRef} sx={{fontFamily: "Lato", backgroundColor: "black", minWidth: "100%"}}>
                             <Box id="guide-section"
                                  sx={{paddingTop: "6rem", paddingBottom: "6rem", fontFamily: "Lato"}}>
@@ -298,6 +313,7 @@ function Home() {
 
                             </Box>
                         </Container>
+                    </AnimatedWrapper>
                         <Footer/>
                     </>
                 )}

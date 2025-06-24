@@ -3,6 +3,7 @@ import CountUp from "./CountUp.jsx";
 import RowOfCities from "./RowOfCities.jsx";
 import React from "react";
 import { motion } from "framer-motion";
+import AnimatedWrapper from "./AnimatedWrapper.jsx";
 
 
 const RowOfNumbers = () => {
@@ -43,7 +44,7 @@ const RowOfNumbers = () => {
                             />
                             <Divider sx={{ margin: "1rem", backgroundColor: "white" }} />
 
-
+                        <AnimatedWrapper>
                             <Typography
                                 variant={"h4"}
                                 sx={{
@@ -60,6 +61,7 @@ const RowOfNumbers = () => {
                             >
                                 Countries
                             </Typography>
+                    </AnimatedWrapper>
                         </Box>
 
                         <Box>
@@ -73,6 +75,7 @@ const RowOfNumbers = () => {
                                 className="count-up-text font-thin text-6xl text-carrot"
                             />
                             <Divider sx={{ margin: "1rem", backgroundColor: "white" }} />
+                        <AnimatedWrapper>
                             <Typography
                                 variant={"h4"}
                                 sx={{
@@ -89,6 +92,7 @@ const RowOfNumbers = () => {
                             >
                                 Cities
                             </Typography>
+                    </AnimatedWrapper>
                         </Box>
 
                         <Box>
@@ -101,6 +105,7 @@ const RowOfNumbers = () => {
                                 className="count-up-text font-thin text-6xl text-carrot"
                             />
                             <Divider sx={{ margin: "1rem", backgroundColor: "white" }} />
+                        <AnimatedWrapper>
                             <Typography
                                 variant={"h4"}
                                 sx={{
@@ -116,6 +121,7 @@ const RowOfNumbers = () => {
                             >
                                 Developer
                             </Typography>
+                    </AnimatedWrapper>
                         </Box>
                     </Box>
             </Container>

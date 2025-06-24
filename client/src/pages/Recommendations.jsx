@@ -36,7 +36,9 @@ const Recommendations = () => {
             setCountry(location.state.country);
             setCity(location.state.city);
         } else {
+            console.log("Country or City not found");
             navigate("/location");
+
         }
     }, [location.state]);
 
@@ -69,9 +71,8 @@ const Recommendations = () => {
                 const eventData = {
                     name: event.name || "N/A",
                     url: event.url || "N/A",
-                    startDate: `${event.dates.start.localDate} ${event.dates.start.localTime.slice(0, 5)}`,
-                    price: event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A"
-                };
+                    startDate: `${event.dates?.start?.localDate ?? "Unknown"} ${event.dates?.start?.localTime?.slice(0, 5) ?? ""}`,
+                    price: event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A"                };
                 return eventData;
             }).filter(event => event !== null);
             return formattedEvents;
@@ -153,8 +154,8 @@ const Recommendations = () => {
             }}>
                 {
                     country ? (
-                         <SimpleCountryMap countryName={country} ></SimpleCountryMap>
-                    ) :  <Typography variant={"h5"} align={"center"} sx={{color: "white", fontFamily: "Lato"}}>Map unavailable</Typography>
+                        <SimpleCountryMap countryName={country} ></SimpleCountryMap>
+                     ) :  <Typography variant={"h5"} align={"center"} sx={{color: "white", fontFamily: "Lato"}}>Map unavailable</Typography>
                 }
                 <Box sx={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
        {/*             <Box sx={{}}>

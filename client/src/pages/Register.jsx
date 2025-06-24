@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar.jsx";
 import CircularText from "../components/CircularText.jsx";
 import bgImage from "../assets/auth-bg.jpg";
 import LoadingPage from "./LoadingPage.jsx";
+import AnimatedWrapper from "../components/AnimatedWrapper.jsx";
 
 function Register() {
     const { register } = useAuth();
@@ -86,14 +87,6 @@ function Register() {
                 backgroundPosition: "center", minHeight: "calc(100vh - 55px)", minWidth: "100%",
             }}
         >
-            <CircularText
-                text="VIBE*ATLAS*VIBE*ATLAS*"
-                onHover="speedUp"
-                size="200"
-                textColor="text-black"
-                spinDuration={20}
-                className="custom-class font-Lato text-2xl mb-10 text-black"
-            />
             <Card
                 sx={{
                     p: 5,
@@ -108,9 +101,12 @@ function Register() {
                     position: "relative",
                 }}
             >
+                <AnimatedWrapper>
+                <AnimatedWrapper>
                 <Typography variant="h4" sx={{ fontWeight: 600, color: "black", mb: 2 }}>
-                    Create Account
+                    Create an Account
                 </Typography>
+                </AnimatedWrapper>
                 <Typography variant="subtitle2" sx={{ fontWeight: 100, color: "black"}}>
                     It only takes 20 seconds to register
                 </Typography>
@@ -205,7 +201,6 @@ function Register() {
                                 textTransform: "none",
                                 background: "#F18F01",
                                 "&:hover": { background: "#F0EAD6" },
-                                maxWidth: { xs: "40%", md: "50%" },
                                 margin: "1rem"
                             }}
                             disabled={!isValidEmail || !email || !password}
@@ -220,9 +215,6 @@ function Register() {
                     onClick={() => navigate("/login")}
                     sx={{
                         textTransform: "none",
-                        position: "absolute",
-                        bottom: 16,
-                        right: 30,
                         fontSize: "0.9rem",
                         color: "rgba(255, 255, 255, 0.7)",
                         "&:hover": { color: "#fff" },
@@ -230,6 +222,7 @@ function Register() {
                 >
                     I already have an account
                 </Button>
+                </AnimatedWrapper>
             </Card>
         </Box>
         </>
