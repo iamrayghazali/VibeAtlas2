@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar.jsx";
 import bgImage from "../assets/auth-bg.jpg";
 import CircularText from "../components/CircularText.jsx";
 import GoogleIcon from '@mui/icons-material/Google';
+import AnimatedWrapper from "../components/AnimatedWrapper.jsx";
 
 function Login() {
     const { login, googleLogin, currentUser } = useAuth();
@@ -74,6 +75,7 @@ function Login() {
                         alignItems: "center",
                     }}
                 >
+            <AnimatedWrapper>
                     <Typography variant="h4" sx={{ fontWeight: 600, color: "black", mb: 2 }}>
                         Login
                     </Typography>
@@ -173,16 +175,15 @@ function Login() {
                         onClick={() => navigate("/register")}
                         sx={{
                             textTransform: "none",
-                            position: "absolute",
-                            bottom: 5,
-                            right: 20,
+                            paddingTop: "1rem",
                             fontSize: "0.9rem",
-                            color: "rgba(255, 255, 255, 0.7)",
+                            color: "",
                             "&:hover": { color: "black" },
                         }}
                     >
-                        Sign up
+                        I don't have an account
                     </Button>
+            </AnimatedWrapper>
                 </Card>
             </Box>
         </>
