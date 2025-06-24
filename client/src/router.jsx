@@ -12,7 +12,7 @@ import './index.css';
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Home />,  // Starting page, maybe a welcome screen or map
+        element: <Home />,
         errorElement: <ErrorElement />,
     },
     {
