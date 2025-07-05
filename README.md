@@ -39,7 +39,7 @@ It’s free, effortless, and actually understands your style. Whether you’re f
 ## Screenshot
 
 ### Home page
-![home-page.png](screenshots/home-page.png)
+![home-page.png](screenshots/main.png)
 ![popular-destinations.png](screenshots/popular-destinations.png)
 
 ## Built With / Tech Stack
