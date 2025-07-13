@@ -38,7 +38,7 @@ const SingleCountryMap = ({ countryName }) => {
 
 
     return (
-        <div className="w-xl bg-amber-50 h-60 flex items-center justify-center">
+        <div className="w-xl  h-60 flex items-center justify-center">
             <ComposableMap width={800} height={600}>
                 <ZoomableGroup center={mapSettings.center} zoom={mapSettings.zoom}>
                     <Geographies geography={{ type: "FeatureCollection", features: [countryFeature] }}>
