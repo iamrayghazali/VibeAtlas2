@@ -158,8 +158,8 @@ const Recommendations = () => {
                      ) :  <Typography variant={"h5"} align={"center"} sx={{color: "white", fontFamily: "Lato"}}>Map unavailable</Typography>
                 }
                 <Box sx={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
-                        {/*TODO finish buttons, switch form ai to events*/}
 
+                        {/*TODO finish buttons, switch form ai to events*/}
                     {loading ? (
                         <Box sx={{display: "flex", }}>
                             <CircularProgress size="5rem" sx={{color: "#F18F01"}}/>
