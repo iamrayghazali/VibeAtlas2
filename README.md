@@ -1,11 +1,14 @@
 # VibeAtlas
+
+![home-page.png](screenshots/main.png)
+![popular-destinations.png](screenshots/popular-destinations.png)
+
 **VibeAtlas** is a smart travel companion that uses user-selected preferences and AI to generate curated destination suggestions — built for people who want to vibe, not search.
 
 ## Table of Contents
 
 - [About The Project](#about-the-project)
 - [Core Features](#core-features)
-- [Screenshot](#screenshot)
 - [Built With / Tech Stack](#built-with--tech-stack)
 - [Prerequisites / Dependencies](#prerequisites--dependencies)
 - [How to Run](#how-to-run)
@@ -36,34 +39,31 @@ It’s free, effortless, and actually understands your style. Whether you’re f
 
 ---
 
-## Screenshot
-
-### Home page
-![home-page.png](screenshots/main.png)
-![popular-destinations.png](screenshots/popular-destinations.png)
-
 ## Built With / Tech Stack
 
-**Frontend:**
+## 🖥️ Frontend
 
-- React
-- Material UI (MUI)
-- React Bits
+- [![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=white&style=for-the-badge)](https://react.dev/)
+- [![MUI](https://img.shields.io/badge/MUI-007FFF?logo=mui&logoColor=white&style=for-the-badge)](https://mui.com/)
+- [![React Bits](https://img.shields.io/badge/React%20Bits-Informational?style=for-the-badge)](https://github.com/vasanthk/react-bits)
 
-**Backend:**
+---
 
-- Express.js (Node.js)
-- Firebase Authentication (Email & Google login)
-- MySQL (Relational Database)
+## 🛠️ Backend
 
-**APIs Used:**
+- [![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white&style=for-the-badge)](https://expressjs.com/)
+- [![Firebase Auth](https://img.shields.io/badge/Firebase%20Auth-FFCA28?logo=firebase&logoColor=black&style=for-the-badge)](https://firebase.google.com/products/auth)
+- [![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white&style=for-the-badge)](https://www.mysql.com/)
 
-- Gemini API
-- Ticketmaster API
-- RapidAPI integrations
-- GeoNames API
-- OpenCage Geocoding API
+---
 
+## 🌐 APIs Used
+
+- [![Gemini API](https://img.shields.io/badge/Gemini%20API-4285F4?logo=google&logoColor=white&style=for-the-badge)](https://deepmind.google/technologies/gemini/)
+- [![Ticketmaster API](https://img.shields.io/badge/Ticketmaster%20API-003366?style=for-the-badge)](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/)
+- [![RapidAPI](https://img.shields.io/badge/RapidAPI-000000?logo=rapidapi&logoColor=white&style=for-the-badge)](https://rapidapi.com/)
+- [![GeoNames](https://img.shields.io/badge/GeoNames-Informational?style=for-the-badge)](https://www.geonames.org/export/web-services.html)
+- [![OpenCage Geocoding](https://img.shields.io/badge/OpenCage%20Geocoding-3A6EAD?style=for-the-badge)](https://opencagedata.com/api)
 ---
 
 ## Prerequisites / Dependencies
