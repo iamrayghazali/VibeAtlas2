@@ -80,7 +80,7 @@ It’s free, effortless, and actually understands your style. Whether you’re f
 ```bash
 1. Clone the repository
 
-git clone https://github.com/your-username/vibeatlas.git
+git clone https://github.com/iamrayghazali/vibeatlas.git
 cd vibeatlas
 
 
